@@ -1,6 +1,7 @@
 # Load some libraries
 #library(rPython)
 #library(RNetCDF)
+library(tidyverse)
 library(ncdf4)
 library(data.table)
 library(plyr)
@@ -9,8 +10,12 @@ library(grid)
 library(gridExtra)
 library(zoo)
 library(scales)
-path <- "ACME/source/run/trait_dist/trait_dist1_US-UMB_I20TRCLM45CBCN/run"
-filenames <- list.files(path,full.names = TRUE,pattern = "trait_dist*")
+#path <- "ACME/source/run/trait_dist/trait_dist2_US-UMB_I20TRCLM45CBCN/run"
+path <- "ACME/source/run/trait_dist"
+#filenames <- list.files(path,full.names = TRUE,pattern = "trait_dist*",recursive = TRUE)
+filenames <- list.files(path,full.names = TRUE,pattern = "trait_dist[0-9]_US-UMB_I20TRCLM45CBCN.clm2.h0.+.nc",recursive = TRUE)
+#grep(pattern = "trait_dist[0-9]_US-UMB_I20TRCLM45CBCN.clm2.h0.+.nc",filenames,value = TRUE,perl = TRUE)
+
 #TODO specify filenames path to only point to trait_dist_*.nc
 ##### Read in csv data from fluxnet directory on google drive
 get_npp <- function(filenames){
@@ -24,15 +29,29 @@ get_npp <- function(filenames){
   mcdate <- ncvar_get(nc, "mcdate") #ncdf4
   
   nc_close(nc)
+  
+  name_run <- strsplit(x=filenames,
+                       split = "\\/|\\.nc",perl = TRUE)[[1]][7]
+  
+  run_id <- name_run
+  
   #TODO if lenght of all variables is not the same throw error
   data <- data.frame(date = mcdate, gpp=gpp, npp=npp, lmr=lmr, mr=mr)
   #TODO transform date variable to something actually useful, rightnow by hour for each year 8760 - 36 days5*24 hours
+  
+  data <- cbind(run_id,data)
+  data$run_id <- gsub("trait_dist",replacement = "",x = data$run_id)
+  
+  data <-separate(data,col = run_id,sep = "\\.|_|\\-",
+                  into = c("run","country","site","model_version","clm_version","V6","year","month","day","V10"))
+  
   return(data)
   
 }
 
-data <- lapply(filenames[13:14],get_npp)
-data[[1]]
+data <- lapply(filenames,get_npp)
+data_all <- ldply(data,data.frame)
+
 str(data)
 ##### Read in netcdf data from ACME
 # set working directory, read in single file,and place variable names into "vars"
