@@ -43,8 +43,8 @@ get_npp <- function(filenames){
   data$run_id <- gsub("trait_dist",replacement = "",x = data$run_id)
   
   data <-separate(data,col = run_id,sep = "\\.|_|\\-",
-                  into = c("run","country","site","model_version","clm_version","V6","year","month","day","V10"))
-  
+                  into = c("run","country","site","model_version","clm_version","V6","year","month","day","sec"))
+  data$V6 <- NULL
   return(data)
   
 }
