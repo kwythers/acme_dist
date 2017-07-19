@@ -1,24 +1,37 @@
 # Load some libraries
 #library(rPython)
 #library(RNetCDF)
-#library(tidyverse)
+library(tidyverse)
 library(ncdf4)
-#library(data.table)
+library(data.table)
 library(plyr)
 library(ggplot2)
-#library(grid)
-#library(gridExtra)
-#library(zoo)
-#library(scales)
-#path <- "ACME/source/run/trait_dist/trait_dist2_US-UMB_I20TRCLM45CBCN/run"
-#path <- "ACME/source/run/trait_dist"
-path <- "~/../chen1718/ACME/source/run/"
+library(grid)
+library(gridExtra)
+library(zoo)
+library(scales)
+
+readpath <- function()
+{ 
+  n <- readline(prompt="Enter path to nc files without starting or finishing slash (e.g. ACME/source/run/trait_dist) : ")
+  return(as.character(n))
+}
+
+readfilename <- function()
+{ 
+  n <- readline(prompt="Enter file or file pattern : ")
+  return(as.character(n))
+}
+
+#Current path ~/../chen1718/ACME/source/run
+path <- print(readpath())
+#current file pattern trait_dist[0-9]_US-UMB_I20TRCLM45CN.clm2.h0.+.nc
+fileptrn <- print(readfilename())
+#"trait_dist[0-9]_US-UMB_I20TRCLM45CBCN.clm2.h0.+.nc"
 #filenames <- list.files(path,full.names = TRUE,pattern = "trait_dist*",recursive = TRUE)
-filenames <- list.files(path,full.names = TRUE,pattern = "trait_dist[0-9]_US-UMB_I20TRCLM45CBCN.clm2.h0.+.nc",recursive = TRUE)
+filenames <- list.files(path2,full.names = TRUE,pattern = fileptrn,recursive = TRUE)
 #grep(pattern = "trait_dist[0-9]_US-UMB_I20TRCLM45CBCN.clm2.h0.+.nc",filenames,value = TRUE,perl = TRUE)
 
-#TODO specify filenames path to only point to trait_dist_*.nc
-##### Read in csv data from fluxnet directory on google drive
 get_npp <- function(filenames){
   # read individual netcdf variables into arrays
   nc <- nc_open(filenames)
@@ -32,13 +45,13 @@ get_npp <- function(filenames){
   nc_close(nc)
   
   name_run <- strsplit(x=filenames,
-                       split = "\\/|\\.nc",perl = TRUE)[[1]][7]
-  
+                       split = "\\/|\\.nc",perl = TRUE)[[1]]
+  name_run <- grep(pattern = "trait_dist.+clm2.h0.+",x = name_run,value = TRUE)
   run_id <- name_run
   
   #TODO if lenght of all variables is not the same throw error
   data <- data.frame(date = mcdate, gpp=gpp, npp=npp, lmr=lmr, mr=mr)
-  #TODO transform date variable to something actually useful, rightnow by hour for each year 8760 - 36 days5*24 hours
+  
   
   data <- cbind(run_id,data)
   data$run_id <- gsub("trait_dist",replacement = "",x = data$run_id)
