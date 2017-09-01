@@ -1,7 +1,10 @@
 library(tidyverse)
 library(data.table)
+library(RCurl)
+library(ggjoy)
 dat <- fread("data/data_runs.csv",sep = ",")
-traits_dat <- 
+###dat <- scp(host = "login.msi.umn.edu", path = "~/data_runs.csv", key = "~/.ssh/id_rsa.pub", user = "wythe001", keypasswd = "")
+
 dat$date <- as.Date(as.character(dat$date), format='%Y%m%d')
 dat$year <- format(dat$date, '%Y')
 dat$month <- format(dat$date, '%m')
@@ -32,32 +35,33 @@ data_short %>%
                    lmr= sum(lmr, na.rm=TRUE)) -> data_shortyear
 
 data_short$date <- paste(data_short$year,data_short$month,sep= "_")
-ggplot(data_short, aes(y=npp, x= mr,color=run)) + 
+ggplot(data_short, aes(y=npp, x= mr,color=as.factor(run))) + 
+  geom_point()+
+  geom_smooth(colour="black")+
+  facet_wrap(~run)+
+  scale_color_brewer(type = "qual",palette = "Set1")+
+  theme_classic()
+
+ggplot(data_short, aes(y=npp, x= lmr,color=as.factor(run))) + 
   geom_point()+
   geom_smooth()+
   scale_color_brewer(type = "qual",palette = "Set1")+
   theme_classic()
 
-ggplot(data_short, aes(y=npp, x= lmr,color=run)) + 
-  geom_point()+
-  geom_smooth()+
-  scale_color_brewer(type = "qual",palette = "Set1")+
-  theme_classic()
 
-
-mr <- ggplot(data_short) + geom_density(aes(x=mr, y=..scaled.., fill=run), alpha=.5)+
+mr <- ggplot(data_short) + geom_density(aes(x=mr, y=..scaled.., fill=as.factor(run)), alpha=.5)+
   scale_fill_brewer(type = "qual",palette = "Set1")+
   xlab("Maintenance respiration")+
   theme_bw(base_size = 20)
-npp <-ggplot(data_short) + geom_density(aes(x=npp, y=..scaled.., fill=run), alpha=.5)+
+npp <-ggplot(data_short) + geom_density(aes(x=npp, y=..scaled.., fill=as.factor(run)), alpha=.5)+
   scale_fill_brewer(type = "qual",palette = "Set1")+
   xlab("NPP")+
   theme_bw(base_size = 20)
-gpp <-ggplot(data_short) + geom_density(aes(x=gpp, y=..scaled.., fill=run), alpha=.5)+
+gpp <-ggplot(data_short) + geom_density(aes(x=gpp, y=..scaled.., fill=as.factor(run)), alpha=.5)+
   scale_fill_brewer(type = "qual",palette = "Set1")+
   xlab("GPP")+
   theme_bw(base_size = 20)
-lmr <- ggplot(data_short) + geom_density(aes(x=lmr, y=..scaled.., fill=run), alpha=.5)+
+lmr <- ggplot(data_short) + geom_density(aes(x=lmr, y=..scaled.., fill=as.factor(run)), alpha=.5)+
   scale_fill_brewer(type = "qual",palette = "Set1")+
   xlab("Leaf maintenance respiration")+
   theme_bw(base_size = 20)
