@@ -2,7 +2,7 @@ library(parallel)
 library(plyr)
 library(data.table)
 library(ncdf4)
-library(tidyr)
+library(tidyverse)
 
 readpath <- function()
 { 
@@ -124,15 +124,17 @@ paralist <- function(filenames){
   stopCluster(cl)
   #return(data)
   data_all <- ldply(data,data.frame)
-  return(data_all)
-  #fwrite(data_all,file = "data_runs.csv",sep = ",",row.names = FALSE,col.names = TRUE)
+  #return(data_all)
+  name_run2 <- strsplit(x=filenames,split = "\\/|\\.nc",perl = TRUE)[[1]]
+  name_run2 <- grep(pattern = "trait_dist.+clm2.h0.+",x = name_run2,value = TRUE)
+  run_id2 <- name_run2
+  run_id2 <- gsub("trait_dist",replacement = "",x = run_id2)
+  run_id2 <- strsplit(run_id2, split = "_")
+  runnm <- run_id2[[1]][1]
+  sitenm <- run_id2[[1]][2]
+  fwrite(data_all,file = paste0("data/data_",sitenm,"_run_",runnm,".csv"),sep = ",",row.names = FALSE,col.names = TRUE)
   
 }
 
-dat_100 <-lapply(file_list,paralist)
-write_out <- function(data){
-  data_all <- ldply(data,data.frame)
-  fwrite(data_all,file = paste0("data_runs",data,".csv"),sep = ",",row.names = FALSE,col.names = TRUE)
-  
-}
-lapply(dat_100,write_out)
+lapply(file_list,paralist)
+
