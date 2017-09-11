@@ -24,7 +24,8 @@ readfilename <- function()
   return(as.character(n))
 }
 
-#Current path ~/\Google Drive/globland/data/fluxnet/15_site_fluxnet_data
+#Current path ~/../shared/fluxnet/fluxnet/15_site_fluxnet_data/
+#Current path ~/Google Drive\\data/fluxnet/15_site_fluxnet_data/
 path <- print(readpath())
 #current file pattern FLX_[A-Z]{2}-[a-zA-Z0-9]{3}FLUXNET2015*[0-9]{4}-[0-9]{4}_[0-9]-[0-9].csv
 fileptrn <- print(readfilename())
