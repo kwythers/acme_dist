@@ -1,0 +1,11 @@
+&modelio
+ diri = '/panfs/roc/groups/8/reichpb/chen1718/ACME/source/run/trait_dist2_US-UMB_I1850CLM45CBCN_ad_spinup/bld/glc'
+ diro = '/panfs/roc/groups/8/reichpb/chen1718/ACME/source/run/trait_dist2_US-UMB_I20TRCLM45CBCN/run'
+ logfile = 'glc.log.170508-230311'
+/
+&pio_inparm
+ pio_numiotasks = -99
+ pio_root = -99
+ pio_stride = -99
+ pio_typename = 'nothing'
+/

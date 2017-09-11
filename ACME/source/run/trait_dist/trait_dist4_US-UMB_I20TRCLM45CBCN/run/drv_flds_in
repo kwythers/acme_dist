@@ -1,0 +1,14 @@
+&drydep_inparm
+/
+&megan_emis_nl
+ megan_factors_file = '/home/reichpb/shared/cesm_inputdata/atm/cam/chem/trop_mozart/emis/megan21_emis_factors_c20120313.nc'
+ megan_specifier = 'ISOP = isoprene', 'C10H16 = pinene_a + carene_3 + thujene_a', 'CH3OH = methanol', 'C2H5OH = ethanol',
+         'CH2O = formaldehyde', 'CH3CHO = acetaldehyde', 'CH3COOH = acetic_acid', 'CH3COCH3 = acetone'
+/
+#!--------------------------------------------------------------------------------------------------------------------------
+#! drv_flds_in:: Comment:
+#! This namelist was created using the following command-line:
+#!     /panfs/roc/groups/8/reichpb/chen1718/ACME/source/components/clm/bld/CLM build-namelist -infile /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN/Buildconf/clmconf/cesm_namelist -csmdata /home/reichpb/shared/cesm_inputdata -inputdata /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN/Buildconf/clm.input_data_list -ignore_ic_year -namelist  &clm_inparm  start_ymd=18500101
+#!   / -use_case 20thC_transient -res 1x1pt_US-UMB -clm_usr_name 1x1pt_US-UMB -clm_start_type default -envxml_dir /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN -l_ncpl 48 -lnd_frac /panfs/roc/groups/8/reichpb/chen1718/ACME/source/run/trait_dist4_US-UMB_I20TRCLM45CBCN/run/domain.lnd.1x1pt_US-UMB_navy.nc -glc_nec 0 -co2_ppmv 379.000 -co2_type diagnostic -config /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN/Buildconf/clmconf/config_cache.xml -mask navy -bgc cn
+#! For help on options use: /panfs/roc/groups/8/reichpb/chen1718/ACME/source/components/clm/bld/CLM build-namelist -help
+#!--------------------------------------------------------------------------------------------------------------------------

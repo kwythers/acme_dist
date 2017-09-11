@@ -1,0 +1,87 @@
+&clm_inparm
+ aero_file = '/home/reichpb/shared/cesm_inputdata/atm/cam/chem/trop_mozart_aero/aero/aerosoldep_monthly_1849-2006_1.9x2.5_c090803.nc'
+ albice = 0.60,0.40
+ co2_file = '/home/reichpb/shared/cesm_inputdata/atm/datm7/CO2/fco2_datm_1765-2007_c100614.nc'
+ co2_type = 'diagnostic'
+ create_crop_landunit = .false.
+ dtime = 1800
+ fatmlndfrc = '/panfs/roc/groups/8/reichpb/chen1718/ACME/source/run/trait_dist4_US-UMB_I20TRCLM45CBCN/run/domain.lnd.1x1pt_US-UMB_navy.nc'
+ finidat = '/panfs/roc/groups/8/reichpb/chen1718/ACME/source/run/trait_dist4_US-UMB_I1850CLM45CBCN/run/trait_dist4_US-UMB_I1850CLM45CBCN.clm2.r.0211-01-01-00000.nc'
+ fsnowaging = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/snicardata/snicar_drdt_bst_fit_60_c070416.nc'
+ fsnowoptics = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/snicardata/snicar_optics_5bnd_c090915.nc'
+ fsoilordercon = './CNP_parameters_c131108trait_dist4_US-UMB_I20TRCLM45CBCN.nc'
+ fsurdat = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/surfdata_map/surfdata_1x1pt_US-UMB_simyr1850.nc'
+ glc_do_dynglacier = .false.
+ hist_mfilt = 8760
+ hist_nhtfrq = -1
+ maxpatch_glcmec = 0
+ maxpatch_pft = 17
+ metdata_bypass = '/home/reichpb/shared/cesm_inputdata/atm/datm7/CLM1PT_data/1x1pt_US-UMB/'
+ metdata_type = 'site'
+ more_vertlayers = .false.
+ nsegspc = 20
+ nyears_ad_carbon_only = 25
+ paramfile = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/paramdata/clm_params.c150521.nc'
+ spinup_mortality_factor = 10
+ spinup_state = 0
+ suplphos = 'ALL'
+ urban_hac = 'ON'
+ urban_traffic = .false.
+ use_century_decomp = .false.
+ use_cn = .true.
+ use_crop = .false.
+ use_lch4 = .false.
+ use_nitrif_denitrif = .false.
+ use_vertsoilc = .true.
+/
+&ndepdyn_nml
+ model_year_align_ndep = 1850
+ ndepmapalgo = 'bilinear'
+ stream_fldfilename_ndep = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/ndepdata/fndep_clm_hist_simyr1849-2006_1.9x2.5_c100428.nc'
+ stream_year_first_ndep = 1850
+ stream_year_last_ndep = 2005
+/
+&popd_streams
+ model_year_align_popdens = 1850
+ popdensmapalgo = 'bilinear'
+ stream_fldfilename_popdens = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/firedata/clmforc.Li_2012_hdm_0.5x0.5_AVHRR_simyr1850-2010_c130401.nc'
+ stream_year_first_popdens = 1850
+ stream_year_last_popdens = 2010
+/
+&light_streams
+ lightngmapalgo = 'bilinear'
+ stream_fldfilename_lightng = '/home/reichpb/shared/cesm_inputdata/atm/datm7/NASA_LIS/clmforc.Li_2012_climo1995-2011.T62.lnfm_Total_c140423.nc'
+ stream_year_first_lightng = 0001
+ stream_year_last_lightng = 0001
+/
+&lai_streams
+/
+&clm_canopyhydrology_inparm
+/
+&clm_soilhydrology_inparm
+/
+&dynamic_subgrid
+ do_harvest = .true.
+ do_transient_pfts = .true.
+ flanduse_timeseries = '/home/reichpb/shared/cesm_inputdata/lnd/clm2/surfdata_map/surfdata.pftdyn_1x1pt_US-UMB.nc'
+/
+&finidat_consistency_checks
+ check_finidat_fsurdat_consistency = .false.
+/
+&dynpft_consistency_checks
+/
+&clmu_inparm
+/
+&clm_soilstate_inparm
+/
+&clm_pflotran_inparm
+/
+&clm_humanindex_inparm
+/
+#!--------------------------------------------------------------------------------------------------------------------------
+#! lnd_in:: Comment:
+#! This namelist was created using the following command-line:
+#!     /panfs/roc/groups/8/reichpb/chen1718/ACME/source/components/clm/bld/CLM build-namelist -infile /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN/Buildconf/clmconf/cesm_namelist -csmdata /home/reichpb/shared/cesm_inputdata -inputdata /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN/Buildconf/clm.input_data_list -ignore_ic_year -namelist  &clm_inparm  start_ymd=18500101
+#!   / -use_case 20thC_transient -res 1x1pt_US-UMB -clm_usr_name 1x1pt_US-UMB -clm_start_type default -envxml_dir /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN -l_ncpl 48 -lnd_frac /panfs/roc/groups/8/reichpb/chen1718/ACME/source/run/trait_dist4_US-UMB_I20TRCLM45CBCN/run/domain.lnd.1x1pt_US-UMB_navy.nc -glc_nec 0 -co2_ppmv 379.000 -co2_type diagnostic -config /panfs/roc/groups/8/reichpb/chen1718/ACME/source/cime/scripts/trait_dist4_US-UMB_I20TRCLM45CBCN/Buildconf/clmconf/config_cache.xml -mask navy -bgc cn
+#! For help on options use: /panfs/roc/groups/8/reichpb/chen1718/ACME/source/components/clm/bld/CLM build-namelist -help
+#!--------------------------------------------------------------------------------------------------------------------------
