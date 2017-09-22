@@ -51,11 +51,15 @@ data1 <- separate(data, TIMESTAMP, into = c("YEAR", "MONTHDAY"), sep = 4)
 data2 <- separate(data1, MONTHDAY, into = c("MONTH", "DAY"), sep = 2)
 data3 <-unite(data2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
 
+##### pull out 4 variables for analysis
+dat <- select(data3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
+                     NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF)
+
 ##### Grouping for figures
 # GPP by site and year
-gpp_siteyear <-data3 %>%
-  group_by(YEAR,SITE) %>%
-  dplyr::summarize(gpp_annual=sum(GPP_DT_VUT_USTAR50, na.rm=T)) %>%
+gpp_siteyear <-dat %>%
+  group_by(SITE,YEAR) %>%
+  dplyr::summarize(gpp_annual = sum(GPP_NT_CUT_REF, na.rm = TRUE)) %>%
   ungroup() %>% # -- Here's an example of why you need to ungroup! --
   dplyr::arrange(SITE)
 
@@ -75,8 +79,8 @@ gpp_siteyear <-data3 %>%
 #   arrange(spgroupname)
 
 ##### plot some stuff
-g <- ggplot(gpp_siteyear, aes(class)) %>%
-g + geom_bar(gpp_by_site, aes(SITE))
+ggplot(data=gpp_siteyear, aes(x = SITE, y = gpp_annual)) +
+  geom_bar(stat="identity")
 
 
 
