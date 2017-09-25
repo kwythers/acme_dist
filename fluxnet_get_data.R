@@ -46,10 +46,10 @@ data_dd3 <-unite(data_dd2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
 ##### pull out 4 variables for analysis
 dat_dd <- select(data_dd3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
                  NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
-  filter(NEE_CUT_REF != "-9999") %>%
-  filter(NEE_CUT_REF_JOINTUNC != "-9999") %>%
-  filter(RECO_NT_CUT_REF != "-9999") %>%
-  filter(GPP_NT_CUT_REF != "-9999")
+  mutate(NEE_CUT_REF = replace(NEE_CUT_REF, NEE_CUT_REF == "-9999", "NA")) %>% 
+  mutate(NEE_CUT_REF_JOINTUNC = replace(NEE_CUT_REF_JOINTUNC, NEE_CUT_REF_JOINTUNC == "-9999", "NA")) %>% 
+  mutate(RECO_NT_CUT_REF = replace(RECO_NT_CUT_REF, RECO_NT_CUT_REF == "-9999", "NA")) %>%
+  mutate(GPP_NT_CUT_REF = replace(GPP_NT_CUT_REF, GPP_NT_CUT_REF == "-9999", "NA"))
 
 ##### for YY files
 fileptrn_yy <- print(readfilename())
@@ -63,10 +63,10 @@ data_yy <- tibble(File = filenames_yy) %>%
 
 dat_yy <- select(data_yy, SITE, TIMESTAMP, NEE_CUT_REF, 
                  NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
-  filter(NEE_CUT_REF != "-9999") %>%
-  filter(NEE_CUT_REF_JOINTUNC != "-9999") %>%
-  filter(RECO_NT_CUT_REF != "-9999") %>%
-  filter(GPP_NT_CUT_REF != "-9999")
+  mutate(NEE_CUT_REF = replace(NEE_CUT_REF, NEE_CUT_REF == "-9999", "NA")) %>% 
+  mutate(NEE_CUT_REF_JOINTUNC = replace(NEE_CUT_REF_JOINTUNC, NEE_CUT_REF_JOINTUNC == "-9999", "NA")) %>% 
+  mutate(RECO_NT_CUT_REF = replace(RECO_NT_CUT_REF, RECO_NT_CUT_REF == "-9999", "NA")) %>%
+  mutate(GPP_NT_CUT_REF = replace(GPP_NT_CUT_REF, GPP_NT_CUT_REF == "-9999", "NA"))
 
 # tbl <- lapply(filenames, read_csv) %>% 
 #   bind_rows()
@@ -80,8 +80,7 @@ gpp_dd_siteyear <-dat_dd %>%
   dplyr::arrange(SITE)
 
 # daily GPP by site and year
-gpp_yy_site <- dat_yy %>%
-  filter(GPP_NT_CUT_REF != "-9999.0000")
+gpp_yy_site <- dat_yy
 
 # # Global harvest by species category
 # spcatch <- d %>%
