@@ -2,10 +2,6 @@
 
 require(tidyverse)
 require(stringr)
-require(readr)  # for read_csv()
-require(dplyr)  # for mutate()
-require(tidyr)  # for unnest()
-require(purrr)  # for map(), reduce()
 require(lubridate)
 
 readpath <- function()
@@ -25,36 +21,22 @@ readfilename <- function()
 
 path <- print(readpath())
 
+##### file and partial file patterns
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_[A-Z]{4,7}_[A-Z]{2}_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ## everything
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_DD_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET daly files
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_YY_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET yearly files
-
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}$ #### sitename pattern
-
-fileptrn_dd <- print(readfilename())
-fileptrn_yy <- print(readfilename())
-
-filenames_dd <- list.files(path, full.names = TRUE, pattern = fileptrn_dd, recursive = TRUE) # DD
-filenames_yy <- list.files(path, full.names = TRUE, pattern = fileptrn_yy, recursive = TRUE) # YY
-
-# site <- str_extract(filenames, "FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_[A-Z]{4,7}_[A-Z]{2}_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv")
 # site <- str_extract(filenames, "[A-Z]{2}-[A-Za-z0-9]{3}")
 
-##### run through all data directories, add column for SITE and fill with regular eppression
+##### for DD files
+fileptrn_dd <- print(readfilename())
+filenames_dd <- list.files(path, full.names = TRUE, pattern = fileptrn_dd, recursive = TRUE) # DD
+#run through all data directories, add column for SITE and fill with regular eppression
 data_dd <- tibble(File = filenames_dd) %>%
   extract(File, "SITE", "([A-Z]{2}-[A-Za-z0-9]{3})", remove = FALSE) %>%
   mutate(Data = lapply(File, read_csv)) %>%
   unnest(Data) %>%
   select(-File)
-
-data_yy <- tibble(File = filenames_yy) %>%
-  extract(File, "SITE", "([A-Z]{2}-[A-Za-z0-9]{3})", remove = FALSE) %>%
-  mutate(Data = lapply(File, read_csv)) %>%
-  unnest(Data) %>%
-  select(-File)
-
-# tbl <- lapply(filenames, read_csv) %>% 
-#   bind_rows()
 
 # separate "timestamp" into date pieces and create a "DATE" column
 data_dd1 <- separate(data_dd, TIMESTAMP, into = c("YEAR", "MONTHDAY"), sep = 4)
@@ -63,19 +45,31 @@ data_dd3 <-unite(data_dd2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
 
 ##### pull out 4 variables for analysis
 dat_dd <- select(data_dd3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
-                     NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
+                 NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
   filter(NEE_CUT_REF != "-9999") %>%
   filter(NEE_CUT_REF_JOINTUNC != "-9999") %>%
   filter(RECO_NT_CUT_REF != "-9999") %>%
   filter(GPP_NT_CUT_REF != "-9999")
+
+##### for YY files
+fileptrn_yy <- print(readfilename())
+filenames_yy <- list.files(path, full.names = TRUE, pattern = fileptrn_yy, recursive = TRUE) # YY
+#run through all data directories, add column for SITE and fill with regular eppression
+data_yy <- tibble(File = filenames_yy) %>%
+  extract(File, "SITE", "([A-Z]{2}-[A-Za-z0-9]{3})", remove = FALSE) %>%
+  mutate(Data = lapply(File, read_csv)) %>%
+  unnest(Data) %>%
+  select(-File)
 
 dat_yy <- select(data_yy, SITE, TIMESTAMP, NEE_CUT_REF, 
-              NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
+                 NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
   filter(NEE_CUT_REF != "-9999") %>%
   filter(NEE_CUT_REF_JOINTUNC != "-9999") %>%
   filter(RECO_NT_CUT_REF != "-9999") %>%
   filter(GPP_NT_CUT_REF != "-9999")
 
+# tbl <- lapply(filenames, read_csv) %>% 
+#   bind_rows()
 
 ##### Grouping for figures
 # daily GPP by site and year
