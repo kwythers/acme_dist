@@ -26,18 +26,28 @@ readfilename <- function()
 path <- print(readpath())
 
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_[A-Z]{4,7}_[A-Z]{2}_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ## everything
-# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_DD_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET DD files only
+# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_DD_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET daly files
+# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_YY_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET yearly files
+
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}$ #### sitename pattern
 
-fileptrn <- print(readfilename())
+fileptrn_dd <- print(readfilename())
+fileptrn_yy <- print(readfilename())
 
-filenames <- list.files(path, full.names = TRUE, pattern = fileptrn, recursive = TRUE)
+filenames_dd <- list.files(path, full.names = TRUE, pattern = fileptrn_dd, recursive = TRUE) # DD
+filenames_yy <- list.files(path, full.names = TRUE, pattern = fileptrn_yy, recursive = TRUE) # YY
 
 # site <- str_extract(filenames, "FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_[A-Z]{4,7}_[A-Z]{2}_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv")
 # site <- str_extract(filenames, "[A-Z]{2}-[A-Za-z0-9]{3}")
 
 ##### run through all data directories, add column for SITE and fill with regular eppression
-data <- tibble(File = filenames) %>%
+data_dd <- tibble(File = filenames_dd) %>%
+  extract(File, "SITE", "([A-Z]{2}-[A-Za-z0-9]{3})", remove = FALSE) %>%
+  mutate(Data = lapply(File, read_csv)) %>%
+  unnest(Data) %>%
+  select(-File)
+
+data_yy <- tibble(File = filenames_yy) %>%
   extract(File, "SITE", "([A-Z]{2}-[A-Za-z0-9]{3})", remove = FALSE) %>%
   mutate(Data = lapply(File, read_csv)) %>%
   unnest(Data) %>%
@@ -47,21 +57,37 @@ data <- tibble(File = filenames) %>%
 #   bind_rows()
 
 # separate "timestamp" into date pieces and create a "DATE" column
-data1 <- separate(data, TIMESTAMP, into = c("YEAR", "MONTHDAY"), sep = 4)
-data2 <- separate(data1, MONTHDAY, into = c("MONTH", "DAY"), sep = 2)
-data3 <-unite(data2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
+data_dd1 <- separate(data_dd, TIMESTAMP, into = c("YEAR", "MONTHDAY"), sep = 4)
+data_dd2 <- separate(data_dd1, MONTHDAY, into = c("MONTH", "DAY"), sep = 2)
+data_dd3 <-unite(data_dd2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
 
 ##### pull out 4 variables for analysis
-dat <- select(data3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
-                     NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF)
+dat_dd <- select(data_dd3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
+                     NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
+  filter(NEE_CUT_REF != "-9999") %>%
+  filter(NEE_CUT_REF_JOINTUNC != "-9999") %>%
+  filter(RECO_NT_CUT_REF != "-9999") %>%
+  filter(GPP_NT_CUT_REF != "-9999")
+
+dat_yy <- select(data_yy, SITE, TIMESTAMP, NEE_CUT_REF, 
+              NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>%
+  filter(NEE_CUT_REF != "-9999") %>%
+  filter(NEE_CUT_REF_JOINTUNC != "-9999") %>%
+  filter(RECO_NT_CUT_REF != "-9999") %>%
+  filter(GPP_NT_CUT_REF != "-9999")
+
 
 ##### Grouping for figures
-# GPP by site and year
-gpp_siteyear <-dat %>%
+# daily GPP by site and year
+gpp_dd_siteyear <-dat_dd %>%
   group_by(SITE,YEAR) %>%
   dplyr::summarize(gpp_annual = sum(GPP_NT_CUT_REF, na.rm = TRUE)) %>%
   ungroup() %>% # -- Here's an example of why you need to ungroup! --
   dplyr::arrange(SITE)
+
+# daily GPP by site and year
+gpp_yy_site <- dat_yy %>%
+  filter(GPP_NT_CUT_REF != "-9999.0000")
 
 # # Global harvest by species category
 # spcatch <- d %>%
@@ -79,7 +105,7 @@ gpp_siteyear <-dat %>%
 #   arrange(spgroupname)
 
 ##### plot some stuff
-ggplot(data=gpp_siteyear, aes(x = SITE, y = gpp_annual)) +
+ggplot(data = gpp_yy_site, aes(x = SITE, y = GPP_NT_CUT_REF)) +
   geom_bar(stat="identity")
 
 
