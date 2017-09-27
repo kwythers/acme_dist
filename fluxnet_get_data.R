@@ -47,10 +47,12 @@ data_dd3 <-unite(data_dd2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
 dat_dd <- select(data_dd3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
                  NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>% 
   mutate(DATE = as.Date(DATE)) %>% 
-  mutate(NEE_CUT_REF = replace(NEE_CUT_REF, NEE_CUT_REF == "-9999", "NA")) %>% 
-  mutate(NEE_CUT_REF_JOINTUNC = replace(NEE_CUT_REF_JOINTUNC, NEE_CUT_REF_JOINTUNC == "-9999", "NA")) %>% 
-  mutate(RECO_NT_CUT_REF = replace(RECO_NT_CUT_REF, RECO_NT_CUT_REF == "-9999", "NA")) %>%
-  mutate(GPP_NT_CUT_REF = replace(GPP_NT_CUT_REF, GPP_NT_CUT_REF == "-9999", "NA"))
+  mutate(NEE_CUT_REF = na_if(NEE_CUT_REF,"-9999")) %>% 
+  mutate(NEE_CUT_REF_JOINTUNC = na_if(NEE_CUT_REF_JOINTUNC, "-9999")) %>% 
+  mutate(RECO_NT_CUT_REF = na_if(RECO_NT_CUT_REF, "-9999")) %>%
+  mutate(GPP_NT_CUT_REF = na_if(GPP_NT_CUT_REF,"-9999")) %>% 
+  mutate_at(vars(contains("REF")), funs(as.numeric)) %>% 
+  mutate_if(is.character, as.factor)
 
 ##### for YY files
 fileptrn_yy <- print(readfilename())
@@ -64,78 +66,81 @@ data_yy <- tibble(File = filenames_yy) %>%
 
 dat_yy <- select(data_yy, SITE, TIMESTAMP, NEE_CUT_REF, 
                  NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>% 
-  mutate(NEE_CUT_REF = replace(NEE_CUT_REF, NEE_CUT_REF == "-9999", "NA")) %>% 
-  mutate(NEE_CUT_REF_JOINTUNC = replace(NEE_CUT_REF_JOINTUNC, NEE_CUT_REF_JOINTUNC == "-9999", "NA")) %>% 
-  mutate(RECO_NT_CUT_REF = replace(RECO_NT_CUT_REF, RECO_NT_CUT_REF == "-9999", "NA")) %>%
-  mutate(GPP_NT_CUT_REF = replace(GPP_NT_CUT_REF, GPP_NT_CUT_REF == "-9999", "NA"))
+  mutate(NEE_CUT_REF = na_if(NEE_CUT_REF, "-9999")) %>%
+  mutate(NEE_CUT_REF_JOINTUNC = na_if(NEE_CUT_REF_JOINTUNC, "-9999")) %>%
+  mutate(RECO_NT_CUT_REF = na_if(RECO_NT_CUT_REF, "-9999")) %>%
+  mutate(GPP_NT_CUT_REF = na_if(GPP_NT_CUT_REF, "-9999")) %>%
+  mutate_at(vars(contains("REF")), funs(as.numeric)) %>% 
+  mutate_if(is.character, as.factor)
 
 # tbl <- lapply(filenames, read_csv) %>% 
 #   bind_rows()
 
-##### Grouping for figures
-# daily GPP by site and year
-# gpp_dd_siteyear <-dat_dd %>%
-#   group_by(SITE,YEAR) %>%
-#   dplyr::summarize(gpp_annual = sum(GPP_NT_CUT_REF, na.rm = TRUE)) %>%
-#   ungroup() %>% # -- Here's an example of why you need to ungroup! --
-#   dplyr::arrange(SITE)
+##### Grouping
+# GPP by site
+gpp_summary <- dat_yy %>% # the names of the new data frame and the data frame to be summarised
+  group_by(SITE) %>%   # the grouping variable
+  summarise(mean_GPP = mean(GPP_NT_CUT_REF, na.rm = TRUE),  # calculates the mean of each group
+            sd_GPP = sd(GPP_NT_CUT_REF, na.rm = TRUE), # calculates the standard deviation of each group
+            n_GPP = n(),  # calculates the sample size per group
+            SE_GPP = sd(GPP_NT_CUT_REF, na.rm = TRUE)/sqrt(n())) # calculates the standard error of each group
 
-# daily GPP by site and year
-# gpp_yy_site <- dat_yy
+# plot GPP by site with sd
+ggplot(gpp_summary, aes(SITE, mean_GPP)) + 
+  geom_col() +  
+  geom_errorbar(aes(ymin = mean_GPP - sd_GPP, ymax = mean_GPP + sd_GPP), width=0.2) + 
+  labs(y="GPP ± s.d.", x = "Species") # + theme_classic()
 
-# # Global harvest by species category
-# spcatch <- d %>%
-#   group_by(year,spgroupname) %>%
-#   dplyr::summarize(totalcatch=sum(catch, na.rm=T)) %>%
-#   ungroup() %>% 
-#   arrange(spgroupname)
-# 
-# # USA harvest by species category over time
-# usa<- d %>%
-#   filter(country=='United States of America') %>%
-#   group_by(year,country,spgroupname) %>%
-#   dplyr::summarize(totalcatch=sum(catch,na.rm=T)) %>%
-#   ungroup() %>%
-#   arrange(spgroupname)
-
-##### plot some stuff
-# Pull out one site and plot
-au_tum_yy <- filter(dat_yy, SITE == "AU-Tum")
-
-ggplot(au_tum_yy, aes(TIMESTAMP, GPP_NT_CUT_REF)) + 
-  geom_bar(stat = "identity") + 
-  expand_limits(y = 0) +
-  # labs(title ="GPP (NT_CUT_REF)", x = "year", y = "annual gpp") + # lable control
-  scale_y_discrete(name = "GPP", breaks = c("0","1000","2000","3000", "4000"), 
-                   labels = c("0","1000","2000","3000", "4000")) +
-  scale_x_discrete(name = "YEAR", breaks = c("2000","2005","2010", "2015"), 
-                   labels = c("2000","2005","2010", "2015"))
-  # theme(axis.text.x = element_text(angle = 90)) + # rotate tic text to verticle
-  # theme(axis.ticks = element_blank(), axis.text.y = element_blank()) # hide ticks and text
-
-ggplot(dat_yy, aes(TIMESTAMP, GPP_NT_CUT_REF)) + 
+# plot annual GPP by site
+ggplot(dat_yy, aes(as.factor(TIMESTAMP), GPP_NT_CUT_REF)) + 
   geom_col(position = "dodge") + 
-  facet_wrap(~ SITE, drop = TRUE, 
-             labeller = label_parsed) + 
+  facet_wrap(~ SITE, drop = TRUE,scales = "free_x") + 
   labs(title ="GPP (NT_CUT_REF)", x = "year", y = "annual gpp") + # lable control
-  theme(axis.text.x = element_text(angle = 90)) + # rotate tic text to verticle
-  theme(axis.ticks = element_blank(), axis.text.y = element_blank()) # hide ticks and text
+  theme(axis.text.x = element_text(angle = 90)) #+ # rotate tic text to verticle
+
+# plot GPP traces by site with daily data 
+ggplot(dat_dd, aes(DATE, GPP_NT_CUT_REF)) +
+  geom_line() +
+  facet_wrap(~ SITE,scales = "free") +
+  labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "DAILY GPP") + # lable control
+  theme(axis.text.x = element_text(angle = 90)) # rotate tic text to verticle
 
 # Pull out one site and plot
-au_tum_dd <- filter(dat_dd, SITE == "AU-Tum")
+# au_tum_yy <- filter(dat_yy, SITE == "AU-Tum")
+# ggplot(au_tum_yy, aes(as.factor(TIMESTAMP), GPP_NT_CUT_REF)) +
+#   geom_bar(stat = "identity") +
+#expand_limits(y = 0) +
+#labs(title ="AU-Tum", x = "year", y = "annual gpp") # lable control
+# scale_y_discrete(name = "GPP", breaks = c("0","1000","2000","3000", "4000"), 
+#                  labels = c("0","1000","2000","3000", "4000")) +
+# scale_x_discrete(name = "YEAR", breaks = c("2000","2005","2010", "2015"), 
+#                  labels = c("2000","2005","2010", "2015"))
+# theme(axis.text.x = element_text(angle = 90)) + # rotate tic text to verticle
+# theme(axis.ticks = element_blank(), axis.text.y = element_blank()) # hide ticks and text
 
-ggplot(au_tum_dd, aes(DATE, GPP_NT_CUT_REF)) + 
-  geom_line() + 
-  labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "DAILY GPP")  # lable control
+# gpp_yy_summary <-dat_dd %>%
+#     group_by(SITE) %>%
+#     dplyr::summarize(gpp_annual = sum(GPP_NT_CUT_REF, na.rm = TRUE)) %>%
+#     ungroup() %>% # -- Here's an example of why you need to ungroup! --
+#     dplyr::arrange(SITE)
+
+# dist
+# ggplot(dat_yy, aes(TIMESTAMP, GPP_NT_CUT_REF)) + 
+#   geom_density(aes(y = GPP_NT_CUT_REF)) + 
+#   facet_wrap(~ SITE, drop = TRUE, 
+#              labeller = label_parsed) + 
+#   labs(title ="GPP (NT_CUT_REF)", x = "year", y = "annual gpp") + # lable control
+#   theme(axis.text.x = element_text(angle = 90)) + # rotate tic text to verticle
+#   theme(axis.ticks = element_blank(), axis.text.y = element_blank()) # hide ticks and text
+
+ # Pull out one site and plot
+# au_tum_dd <- filter(dat_dd, SITE == "AU-Tum")
+# ggplot(au_tum_dd, aes(DATE, as.numeric(GPP_NT_CUT_REF))) + 
+#   geom_line()  
+  # labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "DAILY GPP")  # lable control
   # theme(axis.text.x = element_text(angle = 90)) + # rotate tic text to verticle
   # theme(axis.ticks = element_blank(), axis.text.y = element_blank()) # hide ticks and text
 
-ggplot(dat_dd, aes(DATE, GPP_NT_CUT_REF)) + 
-  geom_line() + 
-  facet_wrap(~ SITE) + 
-  labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "DAILY GPP") + # lable control
-  theme(axis.text.x = element_text(angle = 90)) + # rotate tic text to verticle
-  theme(axis.ticks = element_blank(), axis.text.y = element_blank()) # hide ticks and text
 
 # ggplot(data = dat_yy, aes(x = SITE, y = GPP_NT_CUT_REF)) +
 #   geom_col() +  # geom_col() is replacement for geom_bar(stat = "identity")
@@ -149,12 +154,6 @@ ggplot(dat_dd, aes(DATE, GPP_NT_CUT_REF)) +
 #   # rotate x-axis labels
 #   theme(axis.text.x = element_text(angle = 90, hjust=1, vjust=.5))
 
-
-
-+ 
-  facet_wrap(~ SITE, scale = 'free_x') + 
-  # rotate x-axis labels
-  theme(axis.text.x = element_text(angle = 90, hjust=1, vjust=.5))
 
 
 
