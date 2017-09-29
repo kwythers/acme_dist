@@ -1,0 +1,45 @@
+packages:
+  - tidyverse
+  - stringr
+  - lubridate
+
+sources:
+  - R
+
+targets:
+  all:
+    depends:
+      - data_dd_out
+      - data_mm_out
+      - figures/fluxnet_sites_annual_gpp.pdf
+      - figures/fluxnet_panel_yearly_gpp.pdf
+      - figures/fluxnet_panel_mm_ts_gpp.pdf
+      - figures/fluxnet_panel_dd_ts_gpp.pdf
+    #  - figures/trait_count_by_guilds.pdf
+    #  - figures/trait_count_by_higher_clade.pdf
+ #     - figures/venn_diagram.pdf
+
+  data_dd_out:
+     command: read_fluxnet_day("~/projects/globland/fluxnet")
+  
+  data_yy_out:
+     command: read_fluxnet_year("~/projects/globland/fluxnet")
+       
+  data_mm_out:
+     command: read_fluxnet_month("~/projects/globland/fluxnet")
+     
+  gpp_summary:
+     command: get_gpp_yr_fluxnet(data_yy_out)
+
+  figures/fluxnet_sites_annual_gpp.pdf:
+     command: yr_gpp_fluxnet(gpp_summary)
+
+  figures/fluxnet_panel_yearly_gpp.pdf:
+     command: panel_fluxnet_yrly_gpp(data_yy_out)
+     
+  figures/fluxnet_panel_mm_ts_gpp.pdf:
+     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out)
+     
+  figures/fluxnet_panel_dd_ts_gpp.pdf:
+      command: panel_fluxnet_dly_ts_gpp(data_dd_out)
+     
