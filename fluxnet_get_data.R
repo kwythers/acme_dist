@@ -3,6 +3,7 @@
 require(tidyverse)
 require(stringr)
 require(lubridate)
+require(zoo)
 
 readpath <- function()
 { 
@@ -23,8 +24,9 @@ path <- print(readpath())
 
 ##### file and partial file patterns
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_[A-Z]{4,7}_[A-Z]{2}_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ## everything
-# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_DD_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET daly files
-# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_YY_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET yearly files
+# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_DD_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET daily files
+# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_MM_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET monthly files
+# FLX_[A-Z]{2}-[A-Za-z0-9]{3}_FLUXNET2015_FULLSET_YY_[0-9]{4}-[0-9]{4}_[0-9]{1}-[0-9]{1}.csv ### FULLSET annual files
 # FLX_[A-Z]{2}-[A-Za-z0-9]{3}$ #### sitename pattern
 # site <- str_extract(filenames, "[A-Z]{2}-[A-Za-z0-9]{3}")
 
@@ -43,7 +45,7 @@ data_dd1 <- separate(data_dd, TIMESTAMP, into = c("YEAR", "MONTHDAY"), sep = 4)
 data_dd2 <- separate(data_dd1, MONTHDAY, into = c("MONTH", "DAY"), sep = 2)
 data_dd3 <-unite(data_dd2, "DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
 
-##### pull out 4 variables for analysis
+# pull out 4 daily variables for analysis
 dat_dd <- select(data_dd3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF, 
                  NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>% 
   mutate(DATE = as.Date(DATE)) %>% 
@@ -51,6 +53,31 @@ dat_dd <- select(data_dd3, SITE, DATE, YEAR, MONTH, DAY, NEE_CUT_REF,
   mutate(NEE_CUT_REF_JOINTUNC = na_if(NEE_CUT_REF_JOINTUNC, "-9999")) %>% 
   mutate(RECO_NT_CUT_REF = na_if(RECO_NT_CUT_REF, "-9999")) %>%
   mutate(GPP_NT_CUT_REF = na_if(GPP_NT_CUT_REF,"-9999")) %>% 
+  mutate_at(vars(contains("REF")), funs(as.numeric)) %>% 
+  mutate_if(is.character, as.factor)
+
+##### for MM files
+fileptrn_mm <- print(readfilename())
+filenames_mm <- list.files(path, full.names = TRUE, pattern = fileptrn_mm, recursive = TRUE) # MM
+#run through all data directories, add column for SITE and fill with regular eppression
+data_mm <- tibble(File = filenames_mm) %>%
+  extract(File, "SITE", "([A-Z]{2}-[A-Za-z0-9]{3})", remove = FALSE) %>%
+  mutate(Data = lapply(File, read_csv)) %>%
+  unnest(Data) %>%
+  select(-File)
+
+# separate "timestamp" into date pieces and create a "DATE" column
+data_mm1 <- separate(data_mm, TIMESTAMP, into = c("YEAR", "MONTH"), sep = 4) %>% 
+  mutate(DAY = 15) %>% # add column for d 
+  unite("DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE)
+
+dat_mm <- select(data_mm1, SITE, DATE, YEAR, MONTH, NEE_CUT_REF, 
+                 NEE_CUT_REF_JOINTUNC, RECO_NT_CUT_REF, GPP_NT_CUT_REF) %>% 
+  mutate(DATE = as.Date(DATE)) %>%
+  mutate(NEE_CUT_REF = na_if(NEE_CUT_REF, "-9999")) %>%
+  mutate(NEE_CUT_REF_JOINTUNC = na_if(NEE_CUT_REF_JOINTUNC, "-9999")) %>%
+  mutate(RECO_NT_CUT_REF = na_if(RECO_NT_CUT_REF, "-9999")) %>%
+  mutate(GPP_NT_CUT_REF = na_if(GPP_NT_CUT_REF, "-9999")) %>%
   mutate_at(vars(contains("REF")), funs(as.numeric)) %>% 
   mutate_if(is.character, as.factor)
 
@@ -89,7 +116,8 @@ gpp_summary <- dat_yy %>% # the names of the new data frame and the data frame t
 ggplot(gpp_summary, aes(SITE, mean_GPP)) + 
   geom_col() +  
   geom_errorbar(aes(ymin = mean_GPP - sd_GPP, ymax = mean_GPP + sd_GPP), width=0.2) + 
-  labs(y="GPP ± s.d.", x = "Species") # + theme_classic()
+  labs(y="GPP ± s.d.", x = "Species") + 
+  geom_text(aes(label = n_GPP), size = 3, hjust = 0.5, vjust = 3, position = "stack") # + theme_classic()
 
 # plot annual GPP by site
 ggplot(dat_yy, aes(as.factor(TIMESTAMP), GPP_NT_CUT_REF)) + 
@@ -99,11 +127,19 @@ ggplot(dat_yy, aes(as.factor(TIMESTAMP), GPP_NT_CUT_REF)) +
   theme(axis.text.x = element_text(angle = 90)) #+ # rotate tic text to verticle
 
 # plot GPP traces by site with daily data 
-ggplot(dat_dd, aes(DATE, GPP_NT_CUT_REF)) +
+ggplot(dat_mm, aes(DATE, GPP_NT_CUT_REF)) +
   geom_line() +
   facet_wrap(~ SITE,scales = "free") +
   labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "DAILY GPP") + # lable control
   theme(axis.text.x = element_text(angle = 90)) # rotate tic text to verticle
+
+# plot GPP traces by site with monthly data 
+ggplot(dat_mm, aes(DATE, GPP_NT_CUT_REF)) +
+  geom_line() +
+  facet_wrap(~ SITE,scales = "free") +
+  labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "MONTHLY GPP") + # lable control
+  theme(axis.text.x = element_text(angle = 90)) # rotate tic text to verticle
+
 
 # Pull out one site and plot
 # au_tum_yy <- filter(dat_yy, SITE == "AU-Tum")
