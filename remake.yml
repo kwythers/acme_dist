@@ -20,13 +20,13 @@ targets:
  #     - figures/venn_diagram.pdf
 
   data_dd_out:
-     command: read_fluxnet_day("~/projects/globland/fluxnet")
+     command: read_fluxnet_day("~/../shared/fluxnet")
   
   data_yy_out:
-     command: read_fluxnet_year("~/projects/globland/fluxnet")
+     command: read_fluxnet_year("~/../shared/fluxnet")
        
   data_mm_out:
-     command: read_fluxnet_month("~/projects/globland/fluxnet")
+     command: read_fluxnet_month("~/../shared/fluxnet")
      
   gpp_summary:
      command: get_gpp_yr_fluxnet(data_yy_out)
