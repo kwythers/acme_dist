@@ -7,17 +7,34 @@ get_gpp_yr_fluxnet <- function(data_yy_out){
               sd_GPP = sd(GPP_NT_CUT_REF, na.rm = TRUE), # calculates the standard deviation of each group
               n_GPP = n(),  # calculates the sample size per group
               SE_GPP = sd(GPP_NT_CUT_REF, na.rm = TRUE)/sqrt(n())) -> gpp_summary # calculates the standard error of each group
+  gpp_summary$type <- "fluxnet"
   return(gpp_summary)
 }
 
+#same function as above but for model data
+get_gpp_yr_model <- function(model_data_year){
+  ##### Grouping
+  # GPP by site
+  model_data_year %>% # the names of the new data frame and the data frame to be summarised
+    group_by(site_code) %>%   # the grouping variable
+    summarise(mean_GPP = mean(gpp, na.rm = TRUE),  # calculates the mean of each group
+              sd_GPP = sd(gpp, na.rm = TRUE), # calculates the standard deviation of each group
+              n_GPP = n(),  # calculates the sample size per group
+              SE_GPP = sd(gpp, na.rm = TRUE)/sqrt(n()))%>%
+    dplyr::rename(SITE=site_code)-> gpp_model_summary # calculates the standard error of each group
+  gpp_model_summary$type <- "model"
+  return(gpp_model_summary)
+}
 
-yr_gpp_fluxnet <- function(gpp_summary) {
+yr_gpp_fluxnet <- function(gpp_summary,gpp_model_summary) {
+  #gpp data for model and fluxnet site
+  gpp_both <- bind_rows(gpp_summary,gpp_model_summary)
   
   # plot GPP by site with sd
-  plot_out <-ggplot(gpp_summary, aes(SITE, mean_GPP)) + 
-    geom_col() +  
-    geom_errorbar(aes(ymin = mean_GPP - sd_GPP, ymax = mean_GPP + sd_GPP), width=0.2) + 
-    labs(y="GPP ± s.d.", x = "Species") + 
+  plot_out <-ggplot(gpp_both, aes(SITE, mean_GPP, fill=type)) + 
+    geom_col(position=position_dodge()) +  
+    geom_errorbar(aes(ymin = mean_GPP - sd_GPP, ymax = mean_GPP + sd_GPP), width=0.2,position=position_dodge(.95)) + 
+    labs(y="GPP ± s.d.", x = "Sites") + 
     geom_text(data=gpp_summary,aes(x=SITE,y=mean_GPP,label=n_GPP),vjust=-1.5,nudge_x = 0.15)+
     #geom_text(data = gpp_summary,aes(x=SITE, y=mean_GPP), size = 3, hjust = 0.5, vjust = 3, position = "stack") #+
     theme_classic()
