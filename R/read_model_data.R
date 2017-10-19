@@ -17,9 +17,12 @@ modify_model <- function(filenames) {
   dat_in$month <- format(dat_in$date, '%m')
   dat_in$day <- format(dat_in$date, '%d')
   
-  #get the output from second to hourly
-  dat_in %>%
-    mutate(npp=npp*3600,mr=mr*3600,lmr=lmr*3600, gpp=gpp*3600) -> dat_modify
+  #get the output from umol/second to annual
+   dat_in %>%
+   mutate(npp = npp / 12 / 1000 * 3600 * 24 * 365,
+          mr = mr / 12 / 1000 * 3600 * 24 * 365,
+          lmr = lmr / 12 / 1000 * 3600 * 24 * 365,
+          gpp = gpp / 12 / 1000 * 3600 * 24 * 365) -> dat_modify
   
   dat_modify %>%
     group_by(run, country, site,year, month, day) %>%
