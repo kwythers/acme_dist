@@ -1,4 +1,8 @@
 packages:
+  - parallel
+  - plyr
+  - data.table
+  - ncdf4
   - tidyverse
   - stringr
   - lubridate
@@ -11,34 +15,52 @@ targets:
     depends:
       - data_dd_out
       - data_mm_out
+      - data_day_out
+      - model_data_month
+      - model_data_year
       - figures/fluxnet_sites_annual_gpp.pdf
       - figures/fluxnet_panel_yearly_gpp.pdf
       - figures/fluxnet_panel_mm_ts_gpp.pdf
       - figures/fluxnet_panel_dd_ts_gpp.pdf
-    #  - figures/trait_count_by_guilds.pdf
+      - model_output.zip
     #  - figures/trait_count_by_higher_clade.pdf
  #     - figures/venn_diagram.pdf
 
+  model_output.zip:
+     command: get_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
+
   data_dd_out:
-     command: read_fluxnet_day("~/projects/globland/fluxnet")
+     command: read_fluxnet_day("~/../shared/fluxnet")
   
   data_yy_out:
-     command: read_fluxnet_year("~/projects/globland/fluxnet")
+     command: read_fluxnet_year("~/../shared/fluxnet")
        
   data_mm_out:
-     command: read_fluxnet_month("~/projects/globland/fluxnet")
+     command: read_fluxnet_month("~/../shared/fluxnet")
+
+  data_day_out:
+     command: read_model("~/acme_dist/data/model_output")
      
+  model_data_month:
+     command: model_to_month(data_day_out)  
+
+  model_data_year:
+     command: model_to_year(data_day_out)
+  
+  gpp_model_summary:
+    command: get_gpp_yr_model(model_data_year)     
+    
   gpp_summary:
      command: get_gpp_yr_fluxnet(data_yy_out)
 
   figures/fluxnet_sites_annual_gpp.pdf:
-     command: yr_gpp_fluxnet(gpp_summary)
+     command: yr_gpp_fluxnet(gpp_summary,gpp_model_summary)
 
   figures/fluxnet_panel_yearly_gpp.pdf:
      command: panel_fluxnet_yrly_gpp(data_yy_out)
      
   figures/fluxnet_panel_mm_ts_gpp.pdf:
-     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out)
+     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out,model_data_month)
      
   figures/fluxnet_panel_dd_ts_gpp.pdf:
       command: panel_fluxnet_dly_ts_gpp(data_dd_out)
