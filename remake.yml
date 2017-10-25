@@ -16,6 +16,7 @@ targets:
       - data_dd_out
       - data_mm_out
       - data_day_out
+      - model_data_month
       - model_data_year
       - figures/fluxnet_sites_annual_gpp.pdf
       - figures/fluxnet_panel_yearly_gpp.pdf
@@ -40,6 +41,9 @@ targets:
   data_day_out:
      command: read_model("~/acme_dist/data/model_output")
      
+  model_data_month:
+     command: model_to_month(data_day_out)  
+
   model_data_year:
      command: model_to_year(data_day_out)
   
@@ -56,7 +60,7 @@ targets:
      command: panel_fluxnet_yrly_gpp(data_yy_out)
      
   figures/fluxnet_panel_mm_ts_gpp.pdf:
-     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out)
+     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out,model_data_month)
      
   figures/fluxnet_panel_dd_ts_gpp.pdf:
       command: panel_fluxnet_dly_ts_gpp(data_dd_out)

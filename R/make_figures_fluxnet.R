@@ -60,10 +60,32 @@ panel_fluxnet_yrly_gpp <- function(data_yy_out) {
 }
 
 
-panel_fluxnet_mnthly_ts_gpp <- function(data_mm_out) {
+panel_fluxnet_mnthly_ts_gpp <- function(data_mm_out,model_data_month) {
+  model_data_month %>%
+    dplyr::rename(SITE=site_code,
+                  YEAR=year,
+                  MONTH=month,
+                  GPP_NT_CUT_REF=gpp) %>%
+    mutate(DAY = 15) %>% # add column for d 
+    unite("DATE", YEAR, MONTH, DAY, sep = "-", remove = FALSE) %>%
+    mutate(DATE = as.Date(DATE)) %>%
+    select(-run,-mr,-npp,-lmr,
+           -YEAR,-MONTH,-DAY) -> model_data_month
   
-  plot_out <- ggplot(data_mm_out, aes(DATE, GPP_NT_CUT_REF)) +
+  data_mm_out %>%
+    select(-NEE_CUT_REF,
+           -NEE_CUT_REF_JOINTUNC,
+           -RECO_NT_CUT_REF,-YEAR,-MONTH) -> data_mm_out
+  
+  model_data_month$type <- "model"
+  
+  data_mm_out$type <- "fluxnet"
+  
+  monthly_gpp_both <- bind_rows(model_data_month,data_mm_out)
+  
+  plot_out <- ggplot(monthly_gpp_both, aes(DATE, GPP_NT_CUT_REF,colour=type)) +
   geom_line() +
+    scale_colour_brewer(palette="Set1")+
   facet_wrap(~ SITE,scales = "free") +
   labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "MONTHLY GPP") + # lable control
   theme(axis.text.x = element_text(angle = 90)) # rotate tic text to verticle

@@ -19,10 +19,10 @@ modify_model <- function(filenames) {
   
   #get the output from umol/second to annual
    dat_in %>%
-   mutate(npp = npp / 12 / 1000 * 3600 * 24 * 365,
-          mr = mr / 12 / 1000 * 3600 * 24 * 365,
-          lmr = lmr / 12 / 1000 * 3600 * 24 * 365,
-          gpp = gpp / 12 / 1000 * 3600 * 24 * 365) -> dat_modify
+   mutate(npp = npp * 3600,
+          mr = mr * 3600,
+          lmr = lmr * 3600,
+          gpp = gpp * 3600) -> dat_modify
   
   dat_modify %>%
     group_by(run, country, site,year, month, day) %>%
@@ -55,6 +55,24 @@ get_model_year <- function(data){
   
 }
   
+model_to_month <- function(data_day_out){
+  list_out <- lapply(data_day_out,get_model_month)
+  model_data_month <-ldply(list_out,data.frame)
+  return(model_data_month)
+  
+}
+
+get_model_month <- function(data){
+  data %>%
+    group_by(run, country,site,year,month) %>%
+    dplyr::summarise(mr = sum(mr, na.rm=TRUE),
+                     npp=sum(npp, na.rm=TRUE),
+                     gpp= sum(gpp, na.rm=TRUE),
+                     lmr= sum(lmr, na.rm=TRUE)) %>%
+    unite(site_code,country,site, sep="-")-> data_out
+  return(data_out)
+  
+}
 
 # dat %>%
 #   group_by(run, country, site,year, month, day) %>%
