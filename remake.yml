@@ -14,20 +14,34 @@ targets:
   all:
     depends:
       - data_dd_out
+      - mean_model_data_day_out
       - data_mm_out
       - data_day_out
+      - default_model_data_day_out
       - model_data_month
+      - mean_model_data_month
+      - default_model_data_month #THIS ONE
       - model_data_year
+      - mean_model_data_year
+      - default_model_data_year
       - figures/fluxnet_sites_annual_gpp.pdf
       - figures/fluxnet_panel_yearly_gpp.pdf
       - figures/fluxnet_panel_mm_ts_gpp.pdf
       - figures/fluxnet_panel_dd_ts_gpp.pdf
+      - default_model_output.zip
+      - mean_model_output.zip
       - model_output.zip
     #  - figures/trait_count_by_higher_clade.pdf
  #     - figures/venn_diagram.pdf
 
   model_output.zip:
      command: get_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
+
+  mean_model_output.zip:
+       command: get_mean_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
+
+  default_model_output.zip:
+       command: get_default_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
 
   data_dd_out:
      command: read_fluxnet_day("~/../shared/fluxnet")
@@ -40,27 +54,51 @@ targets:
 
   data_day_out:
      command: read_model("~/acme_dist/data/model_output")
+
+  mean_model_data_day_out:
+     command: read_mean_model("~/acme_dist/data/mean_model_output_out")
+
+  default_model_data_day_out:
+     command: read_default_model("~/acme_dist/data/default_model_output_out")
      
   model_data_month:
      command: model_to_month(data_day_out)  
 
+  mean_model_data_month:
+     command: mean_model_to_month(mean_model_data_day_out)  
+
+  default_model_data_month: #THIS ONE
+     command: default_model_to_month(default_model_data_day_out)  
+
   model_data_year:
      command: model_to_year(data_day_out)
-  
+
+  mean_model_data_year:
+     command: mean_model_to_year(mean_model_data_day_out)
+
+  default_model_data_year: #THIS ONE
+     command: default_model_to_year(default_model_data_day_out)
+    
   gpp_model_summary:
     command: get_gpp_yr_model(model_data_year)     
+
+  gpp_mean_model_summary:
+    command: get_gpp_yr_mean_model(mean_model_data_year)     
+
+  gpp_default_model_summary:
+    command: get_gpp_yr_default_model(default_model_data_year)     
     
   gpp_summary:
      command: get_gpp_yr_fluxnet(data_yy_out)
 
   figures/fluxnet_sites_annual_gpp.pdf:
-     command: yr_gpp_fluxnet(gpp_summary,gpp_model_summary)
+     command: yr_gpp_fluxnet(gpp_summary,gpp_model_summary,gpp_mean_model_summary,gpp_default_model_summary)
 
   figures/fluxnet_panel_yearly_gpp.pdf:
      command: panel_fluxnet_yrly_gpp(data_yy_out)
      
   figures/fluxnet_panel_mm_ts_gpp.pdf:
-     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out,model_data_month)
+     command: panel_fluxnet_mnthly_ts_gpp(data_mm_out,model_data_month,mean_model_data_month)
      
   figures/fluxnet_panel_dd_ts_gpp.pdf:
       command: panel_fluxnet_dly_ts_gpp(data_dd_out)
