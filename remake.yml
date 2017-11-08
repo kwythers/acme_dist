@@ -101,8 +101,7 @@ targets:
      command: make_pft_key()
 
   trait_dat:
-     command: read_trait_data("data/subPFT2.csv",pft_key)
-           - figures/pft_traits_lnm_sla.pdf
+     command: read_trait_data(pft_key)
     
   figures/pft_traits_lnm_sla.pdf:
      command: pft_lnm_sla(trait_dat)

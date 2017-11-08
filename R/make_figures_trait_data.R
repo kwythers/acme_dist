@@ -18,8 +18,8 @@ make_pft_key <- function() {
   
 }
 
-read_trait_data <- function(path,pft_key) {
-  trait_dat <- read_csv(path)
+read_trait_data <- function(pft_key) {
+  trait_dat <- read_csv("data/subPFT2.csv")
   #make trait data into three columns
   trait_dat<-lapply(split(as.list(trait_dat), cut(1:ncol(trait_dat), 14, labels = FALSE)), as.data.frame)
   #match name of columns across data sets
