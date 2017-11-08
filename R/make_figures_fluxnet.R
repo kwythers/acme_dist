@@ -61,14 +61,15 @@ yr_gpp_fluxnet <- function(gpp_summary,gpp_model_summary,gpp_mean_model_summary,
                        gpp_mean_model_summary,
                        gpp_default_model_summary,
                        gpp_global_cell_summary)
-  gpp_all$Type <- factor(gpp_all$type, c("Fluxnet",
+  
+  gpp_all$type <- factor(gpp_all$type, c("Fluxnet",
                                          "Default model",
+                                         "Global cell model",
                                          "Mean model",
-                                         "PFT distribution model",
-                                         "Global cell model"))
+                                         "PFT distribution model"))
   
   # plot GPP by site with sd
-  plot_out <-ggplot(gpp_all, aes(SITE, mean_GPP, fill=Type)) + 
+  plot_out <-ggplot(gpp_all, aes(SITE, mean_GPP, fill=type)) + 
     scale_fill_brewer(palette = "Set1")+
     geom_col(position=position_dodge()) +  
     geom_errorbar(aes(ymin = mean_GPP - sd_GPP, ymax = mean_GPP + sd_GPP), width=0.2,position=position_dodge(.95)) + 
@@ -76,6 +77,7 @@ yr_gpp_fluxnet <- function(gpp_summary,gpp_model_summary,gpp_mean_model_summary,
     geom_text(data=gpp_summary,aes(x=SITE,y=mean_GPP,label=n_GPP),vjust=-1.5,nudge_x = 0.15)+
     #geom_text(data = gpp_summary,aes(x=SITE, y=mean_GPP), size = 3, hjust = 0.5, vjust = 3, position = "stack") #+
     theme_classic()
+  
   pdf("figures/fluxnet_sites_annual_gpp.pdf", width = 10)
   print(plot_out)
   dev.off()
