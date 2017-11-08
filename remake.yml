@@ -6,6 +6,7 @@ packages:
   - tidyverse
   - stringr
   - lubridate
+  - RColorBrewer
 
 sources:
   - R
@@ -24,6 +25,11 @@ targets:
       - model_data_year
       - mean_model_data_year
       - default_model_data_year
+      - pft_key
+      - trait_dat
+      - figures/pft_traits_lnm_sla.pdf
+      - figures/pft_traits_lls_sla.pdf
+      - figures/pft_traits_lnm_lls.pdf
       - figures/fluxnet_sites_annual_gpp.pdf
       - figures/fluxnet_panel_yearly_gpp.pdf
       - figures/fluxnet_panel_mm_ts_gpp.pdf
@@ -90,6 +96,22 @@ targets:
     
   gpp_summary:
      command: get_gpp_yr_fluxnet(data_yy_out)
+
+  pft_key:
+     command: make_pft_key()
+
+  trait_dat:
+     command: read_trait_data("data/subPFT2.csv",pft_key)
+           - figures/pft_traits_lnm_sla.pdf
+    
+  figures/pft_traits_lnm_sla.pdf:
+     command: pft_lnm_sla(trait_dat)
+
+  figures/pft_traits_lls_sla.pdf:
+     command: pft_lls_sla(trait_dat)
+
+  figures/pft_traits_lnm_lls.pdf:
+     command: pft_lnm_lls(trait_dat)
 
   figures/fluxnet_sites_annual_gpp.pdf:
      command: yr_gpp_fluxnet(gpp_summary,gpp_model_summary,gpp_mean_model_summary,gpp_default_model_summary)
