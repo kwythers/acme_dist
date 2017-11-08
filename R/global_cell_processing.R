@@ -16,6 +16,6 @@ get_gpp_yr_global_cell <- function(global_cell_data){
               sd_GPP = sd(GPP, na.rm = TRUE), # calculates the standard deviation of each group
               n_GPP = n(),  # calculates the sample size per group
               SE_GPP = sd(GPP, na.rm = TRUE)/sqrt(n())) -> gpp_global_cell_summary # calculates the standard error of each group
-  gpp_global_cell_summary$type <- "global cell"
+  gpp_global_cell_summary$type <- "Global cell model"
   return(gpp_global_cell_summary)
 }

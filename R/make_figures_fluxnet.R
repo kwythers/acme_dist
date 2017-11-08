@@ -7,7 +7,7 @@ get_gpp_yr_fluxnet <- function(data_yy_out){
               sd_GPP = sd(GPP_NT_CUT_REF, na.rm = TRUE), # calculates the standard deviation of each group
               n_GPP = n(),  # calculates the sample size per group
               SE_GPP = sd(GPP_NT_CUT_REF, na.rm = TRUE)/sqrt(n())) -> gpp_summary # calculates the standard error of each group
-  gpp_summary$type <- "fluxnet"
+  gpp_summary$type <- "Fluxnet"
   return(gpp_summary)
 }
 
@@ -22,7 +22,7 @@ get_gpp_yr_model <- function(model_data_year){
               n_GPP = n(),  # calculates the sample size per group
               SE_GPP = sd(gpp, na.rm = TRUE)/sqrt(n()))%>%
     dplyr::rename(SITE=site_code)-> gpp_model_summary # calculates the standard error of each group
-  gpp_model_summary$type <- "model"
+  gpp_model_summary$type <- "PFT distribution model"
   return(gpp_model_summary)
 }
 
@@ -36,7 +36,7 @@ get_gpp_yr_mean_model <- function(mean_model_data_year){
               n_GPP = n(),  # calculates the sample size per group
               SE_GPP = sd(gpp, na.rm = TRUE)/sqrt(n()))%>%
     dplyr::rename(SITE = site_code) -> gpp_mean_model_summary # calculates the standard error of each group
-  gpp_mean_model_summary$type <- "mean_model"
+  gpp_mean_model_summary$type <- "Mean model"
   return(gpp_mean_model_summary)
 }
 
@@ -50,7 +50,7 @@ get_gpp_yr_default_model <- function(default_model_data_year){
               n_GPP = n(),  # calculates the sample size per group
               SE_GPP = sd(gpp, na.rm = TRUE)/sqrt(n()))%>%
     dplyr::rename(SITE = site_code) -> gpp_default_model_summary # calculates the standard error of each group
-  gpp_default_model_summary$type <- "default_model"
+  gpp_default_model_summary$type <- "Default model"
   return(gpp_default_model_summary)
 }
 
@@ -61,9 +61,14 @@ yr_gpp_fluxnet <- function(gpp_summary,gpp_model_summary,gpp_mean_model_summary,
                        gpp_mean_model_summary,
                        gpp_default_model_summary,
                        gpp_global_cell_summary)
+  gpp_all$Type <- factor(gpp_all$type, c("Fluxnet",
+                                         "Default model",
+                                         "Mean model",
+                                         "PFT distribution model",
+                                         "Global cell model"))
   
   # plot GPP by site with sd
-  plot_out <-ggplot(gpp_all, aes(SITE, mean_GPP, fill=type)) + 
+  plot_out <-ggplot(gpp_all, aes(SITE, mean_GPP, fill=Type)) + 
     scale_fill_brewer(palette = "Set1")+
     geom_col(position=position_dodge()) +  
     geom_errorbar(aes(ymin = mean_GPP - sd_GPP, ymax = mean_GPP + sd_GPP), width=0.2,position=position_dodge(.95)) + 
