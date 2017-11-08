@@ -54,12 +54,13 @@ get_gpp_yr_default_model <- function(default_model_data_year){
   return(gpp_default_model_summary)
 }
 
-yr_gpp_fluxnet <- function(gpp_summary,gpp_model_summary,gpp_mean_model_summary,gpp_default_model_summary) {
+yr_gpp_fluxnet <- function(gpp_summary,gpp_model_summary,gpp_mean_model_summary,gpp_default_model_summary,gpp_global_cell_summary) {
   #gpp data for model and fluxnet site
   gpp_all <- bind_rows(gpp_summary,
                        gpp_model_summary,
                        gpp_mean_model_summary,
-                       gpp_default_model_summary)
+                       gpp_default_model_summary,
+                       gpp_global_cell_summary)
   
   # plot GPP by site with sd
   plot_out <-ggplot(gpp_all, aes(SITE, mean_GPP, fill=type)) + 

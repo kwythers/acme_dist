@@ -25,6 +25,7 @@ targets:
       - model_data_year
       - mean_model_data_year
       - default_model_data_year
+      - global_cell_data
       - pft_key
       - trait_dat
       - figures/pft_traits_lnm_sla.pdf
@@ -84,7 +85,10 @@ targets:
 
   default_model_data_year: #THIS ONE
      command: default_model_to_year(default_model_data_day_out)
-    
+  
+  global_cell_data:
+    command: read_global_cell()       
+  
   gpp_model_summary:
     command: get_gpp_yr_model(model_data_year)     
 
@@ -96,6 +100,9 @@ targets:
     
   gpp_summary:
      command: get_gpp_yr_fluxnet(data_yy_out)
+
+  gpp_global_cell_summary:
+    command: get_gpp_yr_global_cell(global_cell_data)     
 
   pft_key:
      command: make_pft_key()
@@ -113,7 +120,7 @@ targets:
      command: pft_lnm_lls(trait_dat)
 
   figures/fluxnet_sites_annual_gpp.pdf:
-     command: yr_gpp_fluxnet(gpp_summary,gpp_model_summary,gpp_mean_model_summary,gpp_default_model_summary)
+     command: yr_gpp_fluxnet(gpp_summary,gpp_model_summary,gpp_mean_model_summary,gpp_default_model_summary,gpp_global_cell_summary)
 
   figures/fluxnet_panel_yearly_gpp.pdf:
      command: panel_fluxnet_yrly_gpp(data_yy_out)
