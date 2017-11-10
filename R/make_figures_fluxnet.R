@@ -142,7 +142,7 @@ panel_fluxnet_mnthly_ts_gpp <- function(data_mm_out,model_data_month,mean_model_
   plot_out <- ggplot(monthly_gpp_all, aes(DATE, GPP_NT_CUT_REF,colour=type)) +
   geom_line() +
     scale_colour_brewer(palette="Set1")+
-  facet_wrap(SITE ~ type,scales = "free") +
+  facet_wrap(~ SITE,scales = "free") +
   labs(title ="GPP (NT_CUT_REF)", x = "DATE", y = "MONTHLY GPP") + # lable control
   theme(axis.text.x = element_text(angle = 90)) # rotate tic text to verticle
   
