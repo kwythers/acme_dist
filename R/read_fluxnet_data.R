@@ -79,6 +79,12 @@ read_fluxnet_month <- function(path) {
     mutate_at(vars(contains("REF")), funs(as.numeric)) %>% 
     mutate_if(is.character, as.factor) -> data_mm_out
   
+  data_mm_out %>%
+    mutate(NEE_CUT_REF = NEE_CUT_REF * days_in_month(DATE)) %>%
+    mutate(NEE_CUT_REF_JOINTUNC = NEE_CUT_REF_JOINTUNC * days_in_month(DATE)) %>%
+    mutate(RECO_NT_CUT_REF = RECO_NT_CUT_REF * days_in_month(DATE)) %>%
+    mutate(GPP_NT_CUT_REF = GPP_NT_CUT_REF * days_in_month(DATE)) -> data_mm_out
+    
   return(data_mm_out)
  
 }
