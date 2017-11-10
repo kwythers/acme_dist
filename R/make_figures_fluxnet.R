@@ -125,9 +125,9 @@ panel_fluxnet_mnthly_ts_gpp <- function(data_mm_out,model_data_month,mean_model_
   
 
   data_mm_out %>%
-    select(-NEE_CUT_REF * days_in_month(DATE),
-           -NEE_CUT_REF_JOINTUNC * days_in_month(DATE),
-           -RECO_NT_CUT_REF * days_in_month(DATE),
+    select(-NEE_CUT_REF,
+           -NEE_CUT_REF_JOINTUNC,
+           -RECO_NT_CUT_REF,
            -YEAR,
            -MONTH) -> data_mm_out
   
@@ -137,8 +137,7 @@ panel_fluxnet_mnthly_ts_gpp <- function(data_mm_out,model_data_month,mean_model_
     
   data_mm_out$type <- "fluxnet"
   
-  # monthly_gpp_all <- bind_rows(model_data_month,data_mm_out,mean_model_data_month)
-  monthly_gpp_all <- data_mm_out
+  monthly_gpp_all <- bind_rows(data_mm_out)
   
   plot_out <- ggplot(monthly_gpp_all, aes(DATE, GPP_NT_CUT_REF,colour=type)) +
   geom_line() +
