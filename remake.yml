@@ -7,6 +7,7 @@ packages:
   - stringr
   - lubridate
   - RColorBrewer
+  - ggtern
 
 sources:
   - R
@@ -35,6 +36,7 @@ targets:
       - figures/fluxnet_panel_yearly_gpp.pdf
       - figures/fluxnet_panel_mm_ts_gpp.pdf
       - figures/fluxnet_panel_dd_ts_gpp.pdf
+      - figures/ternary_trait_plot.pdf
       - default_model_output.zip
       - mean_model_output.zip
       - model_output.zip
@@ -130,4 +132,7 @@ targets:
      
   figures/fluxnet_panel_dd_ts_gpp.pdf:
       command: panel_fluxnet_dly_ts_gpp(data_dd_out)
+      
+  figures/ternary_trait_plot.pdf:    
+      command: ternary_trait(trait_dat)
      

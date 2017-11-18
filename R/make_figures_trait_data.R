@@ -104,4 +104,21 @@ pft_lnm_lls <- function(trait_dat) {
   
 } 
 
-
+ternary_trait <- function(trait_dat) {
+  trait_dat %>%
+    dplyr::mutate(sla=scale(sla),lnm=scale(lnm),lls=scale(lls)) -> trait_datz
+  
+  p_out <- ggtern(data=trait_datz,aes(x = sla,y = lnm,z = lls,color=PFTname)) + 
+    theme_rgbw() + 
+    geom_point() +
+    facet_wrap(~PFTname)+
+    labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +
+    theme(legend.position="none")
+  
+  pdf("figures/ternary_trait_plot.pdf", width = 10)
+  print(p_out)
+  dev.off()
+  
+  
+  
+}
