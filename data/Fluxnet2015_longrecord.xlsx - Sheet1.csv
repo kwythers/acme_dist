@@ -1,0 +1,52 @@
+Site,Long name,Start year,end year,# years,Primary PFT,Lat,Lon,MAT (CRU),MAP (CRU)
+AT-Neu,Neustift,2002,2012,11,Arctic C3 grassland,47.1167,11.3175,6.760895,999.5414
+AU-Tum,Tumbarumba,2001,2013,13,Temperate evergreen broadleaf,-35.6557,148.152,12.93521,783.2997
+BE-Bra,Braaschaat,1996,2014,19,Temperate evergreen needleleaf,51.3092,4.5206,9.189117,789.1665
+BE-Lon,Lonzee,2004,2014,11,Cropland,50.5522,4.7445,9.511292,779.5744
+BE-Vie,Vielsam,1996,2014,19,Temperate evergreen needleleaf,50.3055,5.9968,9.009644,834.0096
+BR-Sa1,Santarem km67,2002,2011,10,Tropical evergreen broadleaf,-2.8567,-54.9589,26.09207,2031.45
+CA-Gro,Groundhog,2003,2014,12,Temperate evergreen needleleaf,48.2167,-82.1556,-0.1281128,815.9761
+CA-TP1,Turkey Point 2002 white pine,2002,2014,13,Temperate evergreen needleleaf,42.6609,-80.5595,5.980682,960.6548
+CA-TP3,Turkey Point 1974 white pine,2002,2014,13,Temperate evergreen needleleaf,42.7068,-80.3483,6.506561,906.2849
+CZ-BK1,Beskidy,2004,2014,11,Temperate evergreen needleleaf,49.5026,18.5384,7.347687,684.773
+DE-Gri,Grillenberg,2004,2014,11,C3 grassland,50.9495,12.5125,8.345093,474.727
+DE-Hai,Hainich,2000,2012,13,Temperate deciduous broadleaf,51.0792,10.453,7.330078,625.4496
+DE-Kli,Kingenberg,2004,2014,11,Cropland,50.8929,13.5125,8.324158,501.8524
+DE-Tha,Tharandt,1996,2014,19,Temperate evergreen needleleaf,50.9636,13.5669,8.324158,501.8524
+DK-Sor,Soroe,1996,2014,19,Temperate deciduous broadleaf,55.4869,11.6458,7.755646,538.9374
+DK-ZaH,Zacekberg Heath,2000,2014,15,Deciduous shrub (wetland),74.4732,-20.5503,-13.25189,216.9479
+ES-LJu,Llano de los Juanes,2004,2013,10,Deciduous shrub (wetland),36.9266,-2.7521,12.41833,388.4767
+FI-Hyy,Hyytiala,1996,2014,19,Boreal evergreen needleleaf,61.8474,24.2848,2.119385,511.0188
+FR-Fon,Fontainebleau,2005,2014,10,Deciduous broadleaf,48.4764,2.7801,10.64951,614.3445
+FR-Gri,Grignon,2004,2014,11,Cropland,48.844,1.9524,10.45404,655.7229
+FR-Pue,Puechabon,2000,2014,15,Temperate deciduous broadleaf,43.7414,3.5958,8.092621,1046.383
+GF-Guy,Guyaflux,2004,2014,11,Temperate evergreen broadleaf,5.2788,-52.9249,25.75583,2792.946
+IT-Lav,Lavarone,2003,2014,12,Boreal evergreen needleleaf,45.9553,11.2812,4.765228,1240.964
+IT-Noe,Sardinia/Arca di Noe,2004,2014,11,Deciduous shrub,40.6061,8.1515,15.23206,614.8394
+IT-Ren,Renon,1998,2013,16,Boreal evergreen needleleaf,46.5878,11.4347,3.015076,1475.067
+IT-Ro2,Roccarsampami 2,2002,2012,11,Temperate deciduous broadleaf,42.3903,11.9209,12.64639,655.4166
+IT-SRo,San Rossore,1999,2012,14,Temperate evergreen needleleaf,43.7279,10.2844,8.167664,860.0339
+NL-Loo,Loobos,1996,2014,19,Temperate evergreen needleleaf,52.1679,5.744,8.995819,743.1902
+RU-Cok,Chokurdakh,2003,2013,11,Boreal deciduous shrub,70.6167,147.883,-15.65524,187.8163
+RU-Fyo,Fyodorovskoye,1998,2014,17,Boreal evergreen needleleaf,56.4917,32.9239,3.054199,700.3188
+RU-Sam,Samoylov,2002,2014,13,Arctic C3 grassland,72.3738,126.4958,-17.12042,249.147
+US-ARM,ARM SGP main,2003,2012,10,Cropland,36.605,-97.4884,13.63528,813.8369
+US-Blo,Blodgett Forest,1997,2007,11,Temperate evergreen needleleaf,38.8953,-120.6328,9.814819,1316.663
+US-Ha1,Harvard Forest,1991,2012,22,Temperate deciduous broadleaf,42.5378,-72.1715,6.005066,1131.2
+US-Los,Lost Creek,2000,2014,15,Deciduous shrub (wetland),46.0846,-89.9792,2.684509,742.592
+US-Me2,Metolius intermediate,2002,2014,13,Temperate evergreen needleleaf,44.4523,-121.5574,5.413605,1112.082
+US-MMS,Morgan Monroe,1999,2014,16,Temperate deciduous broadleaf,39.3232,-86.4131,10.48761,1018.192
+US-Ne1,Mead irrigated,2001,2013,13,Cropland,41.1651,-96.4766,8.965973,697.1809
+US-Ne2,Mead rotation,2001,2013,13,Cropland,41.1649,-96.4701,8.965973,697.1809
+US-Ne3,Mead rainfed,2001,2013,13,Cropland,41.1651,-96.4766,8.965973,697.1809
+US-NR1,Niwot Ridge,1998,2014,17,Boreal evergreen needleleaf,40.0329,-105.5464,0.9166565,359.8343
+US-Oho,Ohio oak openings,2004,2013,10,Temperate evergreen broadleaf,41.5545,-83.8438,8.370148,836.6605
+US-PFa,Park Falls,1995,2014,20,Temperate mixed forest,45.9459,-90.2723,2.715149,758.3124
+US-SRM,Santa Rita Mesquite,2004,2014,11,Temperate deciduous shrub,31.8214,-110.8661,17.2561,347.2854
+US-Syv,Sylvania wildnerness,2001,2014,14,Temperate mixed forest,46.242,-89.3477,2.745514,747.3914
+US-Ton,Tonzi ranch,2001,2014,14,Temperate deciduous broadleaf,38.1159,-120.966,12.28159,924.9084
+US-UMB,Unversity of Michigan biological station,2000,2014,15,Deciudous temperate broadleaf,45.5598,-84.7138,6.00E+00,740
+US-Var,Vaira ranch,2000,2014,15,C3 grassland,38.4067,-120.9507,12.28159,924.9084
+US-WCr,Willow Creek,1999,2014,16,Temperate deciduous broadleaf,45.8059,-90.0799,2.715149,758.3124
+US-Wkg, Kendall Grassland,2004,2014,11,C4 grassland,31.7365,-109.9419,15.53043,278.2603
+ZA-Kru,Kruger park,2000,2013,14,Tropical deciduous broadleaf,-25.0197,31.4969,21.51114,613.1855
