@@ -122,3 +122,28 @@ ternary_trait <- function(trait_dat) {
   
   
 }
+
+plot_npp_traits <- function(sites_pft, trait_dat, model_data_month) {
+  trait_dat <- left_join(trait_dat, sites_pft, by = "PFTname")
+  
+  model_data_month %>%
+    group_by(run, site_code, year) %>%
+    filter(lai==max(lai)) %>%
+    ungroup() %>%
+    group_by(run, site_code) %>%
+    dplyr::summarise(npp=mean(npp,na.rm = TRUE),
+                     lai=mean(lai, na.rm = TRUE)) %>%
+    ungroup() %>%
+    left_join(trait_dat, 
+              by=c("run", "site_code"), copy = FALSE) -> model_data_month_lai
+  
+  pdf("figures/high_npp_traits.pdf", width = 10)
+  ggplot(model_data_month_lai, aes(x = sla, y = npp))+
+    geom_point()+
+    scale_x_log10()+
+    scale_y_log10()+
+    geom_smooth(method = lm)+
+    facet_wrap(~ site_code)
+  dev.off()
+  
+}

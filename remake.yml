@@ -37,6 +37,7 @@ targets:
       - figures/fluxnet_panel_mm_ts_gpp.pdf
       - figures/fluxnet_panel_dd_ts_gpp.pdf
       - figures/ternary_trait_plot.pdf
+      - figures/high_npp_traits.pdf
       - default_model_output.zip
       - mean_model_output.zip
       - model_output.zip
@@ -138,4 +139,6 @@ targets:
       
   figures/ternary_trait_plot.pdf:    
       command: ternary_trait(trait_dat)
-     
+      
+  figures/high_npp_traits.pdf:
+      command: plot_npp_traits(sites_pft, trait_dat, model_data_month)
