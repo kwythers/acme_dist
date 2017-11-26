@@ -106,16 +106,21 @@ pft_lnm_lls <- function(trait_dat) {
 
 ternary_trait <- function(trait_dat) {
   trait_dat %>%
+    left_join(model_data_month_lai,
+              by = c("PFT", "sla", "lnm", "lls", "run", "PFTname")) %>%
+    filter(!is.na(npp), !is.na(gpp))%>%
     dplyr::mutate(sla=scale(log10(sla)),
-                  lnm=scale(log10(lnm)),lls=scale(log10(lls))) %>%
-    left_join(model_data_month_lai)-> trait_datz
+                  lnm=scale(log10(lnm)),lls=scale(log10(lls))) -> trait_datz
   
-  p_out <- ggtern(data=trait_datz,aes(x = sla,y = lnm,z = lls,color=PFTname)) + 
+  p_out <- ggtern(data=trait_datz,
+    aes(x = sla,y = lnm,z = lls, colour=as.numeric(gpp))) + 
     theme_rgbw() + 
     geom_point() +
+    scale_colour_gradientn(colours = terrain.colors(2000))+
+    #scale_colour_manual(values = getPalette(colourCount))+
     facet_wrap(~PFTname, drop = TRUE)+
     labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +
-    theme(legend.position="none")
+    theme()
   
   pdf("figures/ternary_trait_plot.pdf", width = 10)
   print(p_out)
@@ -134,6 +139,7 @@ max_gpp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
     ungroup() %>%
     group_by(run, site_code) %>%
     dplyr::summarise(gpp=mean(gpp,na.rm = TRUE),
+                     npp=mean(npp,na.rm = TRUE),
                      lai=mean(lai, na.rm = TRUE)) %>%
     ungroup() %>%
     left_join(trait_dat, 

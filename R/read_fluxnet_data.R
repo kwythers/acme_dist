@@ -93,6 +93,7 @@ read_fluxnet_sites_info <- function(){
   sites_pft <- read_csv("data/Fluxnet2015_longrecord.xlsx - Sheet1.csv")
   colnames(sites_pft) <-c("site_code","site_name","start_year","last_year",
                           "running_years","PFTname","lat","long","mat","map")
+  sites_pft$PFTname[sites_pft$PFTname=="Deciudous temperate broadleaf"] <-"Temperate deciduous broadleaf"
   
   return(sites_pft)
   
