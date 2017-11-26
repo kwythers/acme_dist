@@ -104,7 +104,7 @@ pft_lnm_lls <- function(trait_dat) {
   
 } 
 
-ternary_trait <- function(trait_dat) {
+ternary_trait <- function(trait_dat,model_data_month_lai) {
   trait_dat %>%
     left_join(model_data_month_lai,
               by = c("PFT", "sla", "lnm", "lls", "run", "PFTname")) %>%

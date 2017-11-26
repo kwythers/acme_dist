@@ -145,7 +145,7 @@ targets:
       command: panel_fluxnet_dly_ts_gpp(data_dd_out)
       
   figures/ternary_trait_plot.pdf:    
-      command: ternary_trait(trait_dat)
+      command: ternary_trait(trait_dat,model_data_month_lai)
       
   figures/high_gpp_sla.pdf:
       command: plot_gpp_sla(model_data_month_lai)
