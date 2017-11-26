@@ -8,6 +8,7 @@ packages:
   - lubridate
   - RColorBrewer
   - ggtern
+  - cowplot
 
 sources:
   - R
