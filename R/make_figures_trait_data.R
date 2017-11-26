@@ -106,7 +106,8 @@ pft_lnm_lls <- function(trait_dat) {
 
 ternary_trait <- function(trait_dat) {
   trait_dat %>%
-    dplyr::mutate(sla=scale(sla),lnm=scale(lnm),lls=scale(lls)) -> trait_datz
+    dplyr::mutate(sla=scale(log10(sla)),
+                  lnm=scale(log10(lnm)),lls=scale(log10(lls))) -> trait_datz
   
   p_out <- ggtern(data=trait_datz,aes(x = sla,y = lnm,z = lls,color=PFTname)) + 
     theme_rgbw() + 
@@ -123,7 +124,7 @@ ternary_trait <- function(trait_dat) {
   
 }
 
-max_npp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
+max_gpp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
   trait_dat <- left_join(trait_dat, sites_pft, by = "PFTname")
   
   model_data_month %>%
@@ -131,7 +132,7 @@ max_npp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
     filter(lai==max(lai)) %>%
     ungroup() %>%
     group_by(run, site_code) %>%
-    dplyr::summarise(npp=mean(npp,na.rm = TRUE),
+    dplyr::summarise(gpp=mean(gpp,na.rm = TRUE),
                      lai=mean(lai, na.rm = TRUE)) %>%
     ungroup() %>%
     left_join(trait_dat, 
@@ -144,50 +145,49 @@ max_npp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
 }
 
   
-plot_npp_sla <- function(model_data_month_lai) {
+plot_gpp_sla <- function(model_data_month_lai) {
   
-  p_out <- ggplot(model_data_month_lai, aes(x = sla, y = npp))+
+  p_out <- ggplot(model_data_month_lai, aes(x = sla, y = gpp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
-    facet_wrap(~ site_pft)
+    facet_wrap(~ site_pft, drop = TRUE)
   
-  pdf("figures/high_npp_sla.pdf", width = 10)
+  pdf("figures/high_gpp_sla.pdf", width = 10)
   print(p_out)
   dev.off()
   
   
 }
 
-plot_npp_lls <- function(model_data_month_lai) {
+plot_gpp_lls <- function(model_data_month_lai) {
   
-  p_out <- ggplot(model_data_month_lai, aes(x = lls, y = npp))+
+  p_out <- ggplot(model_data_month_lai, aes(x = lls, y = gpp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
-    facet_wrap(~ site_pft)
+    facet_wrap(~ site_pft, drop = TRUE)
   
-  pdf("figures/high_npp_lls.pdf", width = 10)
+  pdf("figures/high_gpp_lls.pdf", width = 10)
   print(p_out)
   dev.off()
   
   
 }
 
-plot_npp_lnm <- function(model_data_month_lai) {
+plot_gpp_lnm <- function(model_data_month_lai) {
   
-  p_out <- ggplot(model_data_month_lai, aes(x = lnm, y = npp))+
+  p_out <- ggplot(model_data_month_lai, aes(x = lnm, y = gpp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
-    facet_wrap(~ site_pft)
+    facet_wrap(~ site_pft, drop = TRUE)
   
-  pdf("figures/high_npp_lnm.pdf", width = 10)
+  pdf("figures/high_gpp_lnm.pdf", width = 10)
   print(p_out)
   dev.off()
   
-
 }
