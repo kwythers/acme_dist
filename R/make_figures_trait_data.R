@@ -137,13 +137,15 @@ plot_npp_traits <- function(sites_pft, trait_dat, model_data_month) {
     left_join(trait_dat, 
               by=c("run", "site_code"), copy = FALSE) -> model_data_month_lai
   
-  pdf("figures/high_npp_traits.pdf", width = 10)
-  ggplot(model_data_month_lai, aes(x = sla, y = npp))+
+  p_out <- ggplot(model_data_month_lai, aes(x = sla, y = npp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
     facet_wrap(~ site_code)
+  
+  pdf("figures/high_npp_traits.pdf", width = 10)
+  print(p_out)
   dev.off()
   
 }
