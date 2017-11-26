@@ -22,14 +22,16 @@ modify_model <- function(filenames) {
    mutate(npp = npp * 3600,
           mr = mr * 3600,
           lmr = lmr * 3600,
-          gpp = gpp * 3600) -> dat_modify
+          gpp = gpp * 3600,
+          lai= lai * 3600) -> dat_modify
   
   dat_modify %>%
     group_by(run, country, site,year, month, day) %>%
     dplyr::summarise(mr = sum(mr, na.rm=TRUE),
                      npp=sum(npp, na.rm=TRUE),
                      gpp= sum(gpp, na.rm=TRUE),
-                     lmr= sum(lmr, na.rm=TRUE)) -> data_day_out
+                     lmr= sum(lmr, na.rm=TRUE),
+                     lai= sum(lai, na.rm=TRUE)) -> data_day_out
   return(data_day_out)
   
 }
@@ -49,7 +51,8 @@ get_model_year <- function(data){
     dplyr::summarise(mr = sum(mr, na.rm=TRUE),
                      npp=sum(npp, na.rm=TRUE),
                      gpp= sum(gpp, na.rm=TRUE),
-                     lmr= sum(lmr, na.rm=TRUE)) %>%
+                     lmr= sum(lmr, na.rm=TRUE),
+                     lai= sum(lai, na.rm=TRUE)) %>%
     unite(site_code,country,site, sep="-")-> data_out
   return(data_out)
   
@@ -68,7 +71,8 @@ get_model_month <- function(data){
     dplyr::summarise(mr = sum(mr, na.rm=TRUE),
                      npp=sum(npp, na.rm=TRUE),
                      gpp= sum(gpp, na.rm=TRUE),
-                     lmr= sum(lmr, na.rm=TRUE)) %>%
+                     lmr= sum(lmr, na.rm=TRUE),
+                     lai= sum(lai, na.rm=TRUE)) %>%
     unite(site_code,country,site, sep="-")-> data_out
   return(data_out)
   
