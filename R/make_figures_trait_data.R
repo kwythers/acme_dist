@@ -135,7 +135,9 @@ max_npp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
                      lai=mean(lai, na.rm = TRUE)) %>%
     ungroup() %>%
     left_join(trait_dat, 
-              by=c("run", "site_code"), copy = FALSE) -> model_data_month_lai
+              by=c("run", "site_code"), copy = FALSE) %>%
+    mutate(short_pft =toupper(gsub("([a-zA-Z]{2})([a-z]{3,99})","\\1",PFTname)),
+           unite(col = site_pft, site_code,short_pft, sep="-")) -> model_data_month_lai
   
   return(model_data_month_lai)
   
@@ -149,7 +151,7 @@ plot_npp_sla <- function(model_data_month_lai) {
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
-    facet_wrap(~ site_code)
+    facet_wrap(~ site_pft)
   
   pdf("figures/high_npp_sla.pdf", width = 10)
   print(p_out)
@@ -165,7 +167,7 @@ plot_npp_lls <- function(model_data_month_lai) {
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
-    facet_wrap(~ site_code)
+    facet_wrap(~ site_pft)
   
   pdf("figures/high_npp_lls.pdf", width = 10)
   print(p_out)
@@ -181,7 +183,7 @@ plot_npp_lnm <- function(model_data_month_lai) {
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
-    facet_wrap(~ site_code)
+    facet_wrap(~ site_pft)
   
   pdf("figures/high_npp_lnm.pdf", width = 10)
   print(p_out)
