@@ -7,6 +7,7 @@ get_default_npp <- function(filenames){
   mr <- ncvar_get(nc, "MR")
   gpp <- ncvar_get(nc, "GPP")
   npp <- ncvar_get(nc, "NPP")
+  lai <- ncvar_get(nc, "ELAI")
   mcdate <- ncvar_get(nc, "mcdate") #ncdf4
   
   nc_close(nc)
@@ -17,7 +18,7 @@ get_default_npp <- function(filenames){
   run_id <- name_run
   
   #TODO if lenght of all variables is not the same throw error
-  data <- data.frame(date = mcdate, gpp=gpp, npp=npp, lmr=lmr, mr=mr)
+  data <- data.frame(date = mcdate, gpp=gpp, npp=npp, lmr=lmr, mr=mr, lai=lai)
   
   
   data <- cbind(run_id,data)
@@ -52,6 +53,7 @@ paralist_default_model_output <- function(filenames){
       mr <- ncvar_get(nc, "MR")
       gpp <- ncvar_get(nc, "GPP")
       npp <- ncvar_get(nc, "NPP")
+      lai <- ncvar_get(nc, "ELAI")
       mcdate <- ncvar_get(nc, "mcdate") #ncdf4
       
       nc_close(nc)
@@ -62,7 +64,7 @@ paralist_default_model_output <- function(filenames){
       run_id <- name_run
       
       #TODO if lenght of all variables is not the same throw error
-      data <- data.frame(date = mcdate, gpp=gpp, npp=npp, lmr=lmr, mr=mr)
+      data <- data.frame(date = mcdate, gpp=gpp, npp=npp, lmr=lmr, mr=mr, lai=lai)
       
       
       data <- cbind(run_id,data)
