@@ -40,7 +40,8 @@ targets:
       - figures/ternary_trait_plot.pdf
       - figures/high_npp_sla.pdf
       - figures/high_npp_lls.pdf
-      - figures/high_npp_lnm.pdf      
+      - figures/high_npp_lnm.pdf
+      - figures/gpp_lai.pdf
       - default_model_output.zip
       - mean_model_output.zip
       - model_output.zip
@@ -154,3 +155,6 @@ targets:
 
   figures/high_gpp_lnm.pdf:
       command: plot_gpp_lnm(model_data_month_lai)
+  
+  figures/gpp_lai.pdf:
+      command: gpp_lai(model_data_year, sites_pft)

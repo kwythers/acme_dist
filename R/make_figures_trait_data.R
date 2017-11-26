@@ -107,12 +107,13 @@ pft_lnm_lls <- function(trait_dat) {
 ternary_trait <- function(trait_dat) {
   trait_dat %>%
     dplyr::mutate(sla=scale(log10(sla)),
-                  lnm=scale(log10(lnm)),lls=scale(log10(lls))) -> trait_datz
+                  lnm=scale(log10(lnm)),lls=scale(log10(lls))) %>%
+    left_join(model_data_month_lai)-> trait_datz
   
   p_out <- ggtern(data=trait_datz,aes(x = sla,y = lnm,z = lls,color=PFTname)) + 
     theme_rgbw() + 
     geom_point() +
-    facet_wrap(~PFTname)+
+    facet_wrap(~PFTname, drop = TRUE)+
     labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +
     theme(legend.position="none")
   
