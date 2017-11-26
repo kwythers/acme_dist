@@ -88,3 +88,13 @@ read_fluxnet_month <- function(path) {
   return(data_mm_out)
  
 }
+
+read_fluxnet_sites_info <- function(){
+  sites_pft <- read_csv("data/Fluxnet2015_longrecord.xlsx - Sheet1.csv")
+  colnames(sites_pft) <-c("site_code","site_name","start_year","last_year",
+                          "running_years","PFTname","lat","long","mat","map")
+  
+  return(sites_pft)
+  
+}
+

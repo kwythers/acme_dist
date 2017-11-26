@@ -49,6 +49,9 @@ targets:
   mean_model_output.zip:
        command: get_mean_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
 
+  sites_pft:
+       command: read_fluxnet_sites_info()
+  
   default_model_output.zip:
        command: get_default_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
 
