@@ -136,8 +136,8 @@ max_npp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
     ungroup() %>%
     left_join(trait_dat, 
               by=c("run", "site_code"), copy = FALSE) %>%
-    mutate(short_pft =toupper(gsub("([a-zA-Z]{2})([a-z]{3,99})","\\1",PFTname)),
-           unite(col = site_pft, site_code,short_pft, sep="-")) -> model_data_month_lai
+    mutate(short_pft =toupper(gsub("([a-zA-Z]{2})([a-z]{3,99})","\\1",PFTname))) %>%
+    unite(col = site_pft, site_code,short_pft, sep="-") -> model_data_month_lai
   
   return(model_data_month_lai)
   
