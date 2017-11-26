@@ -38,7 +38,9 @@ targets:
       - figures/fluxnet_panel_mm_ts_gpp.pdf
       - figures/fluxnet_panel_dd_ts_gpp.pdf
       - figures/ternary_trait_plot.pdf
-      - figures/high_npp_traits.pdf
+      - figures/high_npp_sla.pdf
+      - figures/high_npp_lls.pdf
+      - figures/high_npp_lnm.pdf      
       - default_model_output.zip
       - mean_model_output.zip
       - model_output.zip
@@ -53,6 +55,9 @@ targets:
 
   sites_pft:
        command: read_fluxnet_sites_info()
+  
+  model_data_month_lai:
+       command: max_npp_by_lai(sites_pft, trait_dat, model_data_month)
   
   default_model_output.zip:
        command: get_default_model_data("~/../chen1718/ACME/source/run/archive/ACME_trait_dist")
@@ -141,5 +146,11 @@ targets:
   figures/ternary_trait_plot.pdf:    
       command: ternary_trait(trait_dat)
       
-  figures/high_npp_traits.pdf:
-      command: plot_npp_traits(sites_pft, trait_dat, model_data_month)
+  figures/high_npp_sla.pdf:
+      command: plot_npp_sla(model_data_month_lai)
+
+  figures/high_npp_lls.pdf:
+      command: plot_npp_lls(model_data_month_lai)
+
+  figures/high_npp_lnm.pdf:
+      command: plot_npp_lnm(model_data_month_lai)

@@ -123,7 +123,7 @@ ternary_trait <- function(trait_dat) {
   
 }
 
-plot_npp_traits <- function(sites_pft, trait_dat, model_data_month) {
+max_npp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
   trait_dat <- left_join(trait_dat, sites_pft, by = "PFTname")
   
   model_data_month %>%
@@ -137,30 +137,55 @@ plot_npp_traits <- function(sites_pft, trait_dat, model_data_month) {
     left_join(trait_dat, 
               by=c("run", "site_code"), copy = FALSE) -> model_data_month_lai
   
-  p_sla_npp <- ggplot(model_data_month_lai, aes(x = sla, y = npp))+
+  return(model_data_month_lai)
+  
+}
+
+  
+plot_npp_sla <- function(model_data_month_lai) {
+  
+  p_out <- ggplot(model_data_month_lai, aes(x = sla, y = npp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
     facet_wrap(~ site_code)
   
-  p_lls_npp <- ggplot(model_data_month_lai, aes(x = lls, y = npp))+
+  pdf("figures/high_npp_sla.pdf", width = 10)
+  print(p_out)
+  dev.off()
+  
+  
+}
+
+plot_npp_lls <- function(model_data_month_lai) {
+  
+  p_out <- ggplot(model_data_month_lai, aes(x = lls, y = npp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
     facet_wrap(~ site_code)
   
-  p_lnm_npp <- ggplot(model_data_month_lai, aes(x = lnm, y = npp))+
+  pdf("figures/high_npp_lls.pdf", width = 10)
+  print(p_out)
+  dev.off()
+  
+  
+}
+
+plot_npp_lnm <- function(model_data_month_lai) {
+  
+  p_out <- ggplot(model_data_month_lai, aes(x = lnm, y = npp))+
     geom_point()+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm)+
     facet_wrap(~ site_code)
   
-  panel_out <-plot_grid(p_sla_npp, p_lls_npp, p_lnm_npp,
-                        labels = c("A", "B", "C"), ncol=2)
-  save_plot("figures/high_npp_traits.pdf", panel_out,
-            ncol = 2)
+  pdf("figures/high_npp_lnm.pdf", width = 10)
+  print(p_out)
+  dev.off()
   
+
 }
