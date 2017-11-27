@@ -120,7 +120,7 @@ ternary_trait <- function(trait_dat,model_data_month_lai) {
     #scale_colour_manual(values = getPalette(colourCount))+
     facet_wrap(~PFTname, drop = TRUE)+
     labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +
-    theme()
+    theme(legend.position = "none")
   
   p_out <- ggtern(data=trait_datz,
                       aes(x = sla,y = lnm,z = lls, colour=as.numeric(gpp))) + 
@@ -128,18 +128,14 @@ ternary_trait <- function(trait_dat,model_data_month_lai) {
     geom_point() +
     scale_colour_gradientn(colours = terrain.colors(unique(trait_datz$gpp)))+
     labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +
-    theme()
+    theme(legend.position = "bottom")
   
-  legend <- get_legend(p_out)
+  lay <- rbind(c(1,2,2))
   
-  all <- plot_grid(p_out + theme(legend.position="none"),
-                   panel_out + theme(legend.position="none"),
-                   nrow=1, labels = c("A","B"))
-  
-  all_out <- plot_grid( all, legend, rel_widths = c(3, .3))  
-  
-  save_plot("figures/ternary_trait_plot.pdf", all_out, width=12)
-  
+  pdf("figures/ternary_trait_plot.pdf", width = 10)
+  grid.arrange(p_out,panel_out, ncol=2,layout_matrix=lay)
+  dev.off()
+   
 }
 
 max_gpp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
