@@ -165,10 +165,10 @@ max_gpp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
 plot_gpp_sla <- function(model_data_month_lai) {
   
   p_out <- ggplot(model_data_month_lai, aes(x = sla, y = gpp))+
-    geom_point()+
+    geom_point(colour="oragenred4",alpha=0.3)+
     scale_x_log10()+
     scale_y_log10()+
-    geom_smooth(method = lm)+
+    geom_smooth(method = lm, colour = "black")+
     facet_wrap(~ site_pft, drop = TRUE)
   
   pdf("figures/high_gpp_sla.pdf", width = 10)
@@ -181,10 +181,10 @@ plot_gpp_sla <- function(model_data_month_lai) {
 plot_gpp_lls <- function(model_data_month_lai) {
   
   p_out <- ggplot(model_data_month_lai, aes(x = lls, y = gpp))+
-    geom_point()+
+    geom_point(colour="oragenred4",alpha=0.3)+
     scale_x_log10()+
     scale_y_log10()+
-    geom_smooth(method = lm)+
+    geom_smooth(method = lm, colour = "black")+
     facet_wrap(~ site_pft, drop = TRUE)
   
   pdf("figures/high_gpp_lls.pdf", width = 10)
@@ -197,10 +197,10 @@ plot_gpp_lls <- function(model_data_month_lai) {
 plot_gpp_lnm <- function(model_data_month_lai) {
   
   p_out <- ggplot(model_data_month_lai, aes(x = lnm, y = gpp))+
-    geom_point()+
+    geom_point(colour="oragenred4",alpha=0.3)+
     scale_x_log10()+
     scale_y_log10()+
-    geom_smooth(method = lm)+
+    geom_smooth(method = lm, colour = "black")+
     facet_wrap(~ site_pft, drop = TRUE)
   
   pdf("figures/high_gpp_lnm.pdf", width = 10)
