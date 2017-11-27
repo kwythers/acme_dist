@@ -165,7 +165,7 @@ max_gpp_by_lai <- function(sites_pft, trait_dat, model_data_month) {
 plot_gpp_sla <- function(model_data_month_lai) {
   
   p_out <- ggplot(model_data_month_lai, aes(x = sla, y = gpp))+
-    geom_point(colour="oragenred4",alpha=0.3)+
+    geom_point(colour="orangered4",alpha=0.3)+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm, colour = "black")+
@@ -181,7 +181,7 @@ plot_gpp_sla <- function(model_data_month_lai) {
 plot_gpp_lls <- function(model_data_month_lai) {
   
   p_out <- ggplot(model_data_month_lai, aes(x = lls, y = gpp))+
-    geom_point(colour="oragenred4",alpha=0.3)+
+    geom_point(colour="orangered4",alpha=0.3)+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm, colour = "black")+
@@ -197,7 +197,7 @@ plot_gpp_lls <- function(model_data_month_lai) {
 plot_gpp_lnm <- function(model_data_month_lai) {
   
   p_out <- ggplot(model_data_month_lai, aes(x = lnm, y = gpp))+
-    geom_point(colour="oragenred4",alpha=0.3)+
+    geom_point(colour="orangered4",alpha=0.3)+
     scale_x_log10()+
     scale_y_log10()+
     geom_smooth(method = lm, colour = "black")+
