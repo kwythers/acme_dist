@@ -116,7 +116,7 @@ ternary_trait <- function(trait_dat,model_data_month_lai) {
     aes(x = sla,y = lnm,z = lls, colour=as.numeric(gpp))) + 
     theme_rgbw() + 
     geom_point() +
-    scale_colour_gradientn(colours = terrain.colors(2000))+
+    scale_colour_gradientn(colours = terrain.colors(unique(trait_datz$gpp)))+
     #scale_colour_manual(values = getPalette(colourCount))+
     facet_wrap(~PFTname, drop = TRUE)+
     labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +

@@ -38,9 +38,9 @@ targets:
       - figures/fluxnet_panel_mm_ts_gpp.pdf
       - figures/fluxnet_panel_dd_ts_gpp.pdf
       - figures/ternary_trait_plot.pdf
-      - figures/high_npp_sla.pdf
-      - figures/high_npp_lls.pdf
-      - figures/high_npp_lnm.pdf
+      - figures/high_gpp_sla.pdf
+      - figures/high_gpp_lls.pdf
+      - figures/high_gpp_lnm.pdf
       - figures/gpp_lai.pdf
       - default_model_output.zip
       - mean_model_output.zip
