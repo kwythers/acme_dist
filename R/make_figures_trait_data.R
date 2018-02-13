@@ -110,16 +110,18 @@ ternary_trait <- function(trait_dat,model_data_month_lai) {
               by = c("PFT", "sla", "lnm", "lls", "run", "PFTname")) %>%
     filter(!is.na(npp), !is.na(gpp))%>%
     dplyr::mutate(sla=scale(log10(sla)),
-                  lnm=scale(log10(lnm)),lls=scale(log10(lls))) -> trait_datz
+                  lnm=scale(log10(lnm)),
+                  lls=scale(log10(lls)),
+                  gpp=scale(gpp)) -> trait_datz
   
   panel_out <- ggtern(data=trait_datz,
     aes(x = sla,y = lnm,z = lls, colour=as.numeric(gpp))) + 
-    theme_rgbw() + 
+    #theme_rgbw() + 
     geom_point() +
     scale_colour_gradientn(colours = terrain.colors(unique(trait_datz$gpp)))+
     #scale_colour_manual(values = getPalette(colourCount))+
     facet_wrap(~PFTname, drop = TRUE)+
-    labs(x="SLA",y="Leaf CN?",z="LLS",title="Title") +
+    labs(x="SLA",y="Leaf C:N",z="LLS",title="Title") +
     theme(legend.position = "none")
   
   p_out <- ggtern(data=trait_datz,
